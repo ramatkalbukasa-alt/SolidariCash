@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Notifications — SolidariCash{% endblock %}
+{% block page_header %}Notifications{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Notifications</h1>
+    {% if unread_notifications_count > 0 %}
+    <form method="post" action="{% url 'notifications:mark_all_read' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-secondary text-sm">Tout marquer comme lu</button>
+    </form>
+    {% endif %}
+</div>
+
+<div class="space-y-2">
+    {% for notif in notifications %}
+    <div class="bg-slate-900 border {% if not notif.is_read %}border-green-800/30 bg-green-900/5{% else %}border-slate-800{% endif %} rounded-xl p-4 flex items-start gap-4 transition-colors"
+         id="notif-{{ notif.pk }}">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
+            {% if notif.notification_type == 'success' %}bg-green-500/10
+            {% elif notif.notification_type == 'error' %}bg-red-500/10
+            {% elif notif.notification_type == 'warning' %}bg-orange-500/10
+            {% else %}bg-blue-500/10{% endif %}">
+            <svg class="w-4 h-4
+                {% if notif.notification_type == 'success' %}text-green-400
+                {% elif notif.notification_type == 'error' %}text-red-400
+                {% elif notif.notification_type == 'warning' %}text-orange-400
+                {% else %}text-blue-400{% endif %}"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                {% if notif.notification_type == 'success' %}<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                {% elif notif.notification_type == 'error' %}<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                {% elif notif.notification_type == 'warning' %}<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                {% else %}<path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>{% endif %}
+            </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-2">
+                <p class="font-medium text-sm {% if not notif.is_read %}text-slate-100{% else %}text-slate-400{% endif %}">{{ notif.title }}</p>
+                <span class="text-xs text-slate-600 flex-shrink-0">{{ notif.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+            <p class="text-sm text-slate-500 mt-0.5">{{ notif.message }}</p>
+            <div class="flex items-center gap-2 mt-2">
+                <span class="text-xs text-slate-600 capitalize">{{ notif.get_category_display }}</span>
+                {% if not notif.is_read %}
+                <a href="{% url 'notifications:mark_read' notif.pk %}" class="text-xs text-green-400 hover:text-green-300 cursor-pointer" onclick="markRead({{ notif.pk }}, this); return false;">Marquer lu</a>
+                {% endif %}
+            </div>
+        </div>
+        {% if not notif.is_read %}
+        <div class="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
+        <div class="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        </div>
+        <p class="text-slate-500">Aucune notification</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function markRead(pk, el) {
+    fetch(`/notifications/${pk}/read/`, {
+        method: 'GET',
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+    }).then(() => {
+        const card = document.getElementById(`notif-${pk}`);
+        if (card) {
+            card.classList.remove('border-green-800/30', 'bg-green-900/5');
+            card.classList.add('border-slate-800');
+            el.remove();
+            const dot = card.querySelector('.w-2.h-2');
+            if (dot) dot.remove();
+        }
+    });
+}
+</script>
+{% endblock %}

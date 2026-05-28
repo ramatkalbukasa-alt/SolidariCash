@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Contributions — SolidariCash{% endblock %}
+{% block page_header %}Contributions{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Contributions</h1>
+</div>
+
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+    <form method="get" class="flex flex-wrap gap-3">
+        <select name="cycle" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+            <option value="">Tous les cycles</option>
+            {% for c in cycles %}
+            <option value="{{ c.pk }}" {% if cycle_filter == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="status" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+            <option value="">Tous les statuts</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary text-sm">Filtrer</button>
+    </form>
+</div>
+
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <table class="w-full data-table">
+        <thead>
+            <tr>
+                {% if user.is_admin %}<th>Membre</th>{% endif %}
+                <th>Tête</th><th>Cycle</th><th>Montant dû</th><th>Payé</th><th>Statut</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in contributions %}
+            <tr>
+                {% if user.is_admin %}<td class="text-slate-300">{{ c.head.member.full_name }}</td>{% endif %}
+                <td class="text-slate-400 text-xs">Tête #{{ c.head.head_number }}</td>
+                <td class="text-slate-400 text-xs">{{ c.cycle.name }}</td>
+                <td class="text-slate-300">{{ c.amount_due }}</td>
+                <td class="{% if c.is_paid %}text-green-400{% else %}text-slate-400{% endif %}">{{ c.amount_paid }}</td>
+                <td><span class="badge-{{ c.status }}">{{ c.get_status_display }}</span></td>
+                <td>
+                    <div class="flex items-center gap-2">
+                        {% if not user.is_admin and c.status == 'pending' %}
+                        <a href="{% url 'contributions:submit' c.pk %}" class="btn-primary text-xs py-1 px-2">Payer</a>
+                        {% endif %}
+                        {% if user.is_admin and c.status == 'pending' %}
+                        <a href="{% url 'contributions:validate' c.pk %}" class="btn-primary text-xs py-1 px-2">Valider</a>
+                        {% endif %}
+                        <a href="{% url 'contributions:detail' c.pk %}" class="btn-secondary text-xs py-1 px-2">Voir</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-slate-500 py-8">Aucune contribution trouvée.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

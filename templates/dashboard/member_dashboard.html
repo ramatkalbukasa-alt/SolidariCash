@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Mon tableau de bord — SolidariCash{% endblock %}
+{% block page_header %}Mon tableau de bord{% endblock %}
+
+{% block content %}
+{% if not member %}
+<div class="bg-orange-900/20 border border-orange-800/40 rounded-xl p-6 text-center">
+    <p class="text-orange-300">Votre profil membre n'est pas encore configuré. Contactez l'administrateur.</p>
+</div>
+{% else %}
+
+<!-- Stat Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="stat-card">
+        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Mes têtes</p>
+        <p class="text-3xl font-bold text-white">{{ my_heads.count }}</p>
+        <p class="text-xs text-slate-500 mt-1">têtes actives</p>
+    </div>
+    <div class="stat-card">
+        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Contributions payées</p>
+        <p class="text-3xl font-bold text-green-400">
+            {{ my_contributions|length }}
+        </p>
+        <p class="text-xs text-slate-500 mt-1">ce cycle</p>
+    </div>
+    <div class="stat-card">
+        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Ma prochaine position</p>
+        <p class="text-3xl font-bold text-blue-400">
+            {% if next_distribution %}{{ next_distribution.position }}{% else %}—{% endif %}
+        </p>
+        <p class="text-xs text-slate-500 mt-1">dans la rotation</p>
+    </div>
+    <div class="stat-card">
+        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Statut compte</p>
+        <p class="text-3xl font-bold {% if member.status == 'active' %}text-green-400{% else %}text-orange-400{% endif %}">
+            {{ member.get_status_display }}
+        </p>
+        <p class="text-xs text-slate-500 mt-1">{{ member.head_count }} tête(s)</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+    <!-- Contributions cycle actif -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+            <h2 class="font-semibold text-slate-100">Contributions — cycle actif</h2>
+            <a href="{% url 'contributions:list' %}" class="text-xs text-green-400 hover:text-green-300">Voir tout →</a>
+        </div>
+        {% if active_cycle %}
+        <div class="p-4 space-y-2">
+            {% for contrib in my_contributions %}
+            <div class="flex items-center justify-between bg-slate-800/50 rounded-lg px-4 py-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-200">{{ contrib.head.display_name }}</p>
+                    <p class="text-xs text-slate-500">Dû : {{ contrib.amount_due }} | Payé : {{ contrib.amount_paid }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="badge-{{ contrib.status }}">{{ contrib.get_status_display }}</span>
+                    {% if contrib.status == 'pending' %}
+                    <a href="{% url 'contributions:submit' contrib.pk %}" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Payer →</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-slate-500 text-sm text-center py-4">Aucune contribution pour ce cycle.</p>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-slate-500 text-sm text-center py-8">Aucun cycle actif en ce moment.</p>
+        {% endif %}
+    </div>
+
+    <!-- Ma rotation -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+            <h2 class="font-semibold text-slate-100">Mes positions de rotation</h2>
+            <a href="{% url 'rotation:view' %}" class="text-xs text-green-400 hover:text-green-300">Voir tout →</a>
+        </div>
+        <div class="p-4 space-y-2">
+            {% for ro in my_rotation_positions %}
+            <div class="flex items-center justify-between bg-slate-800/50 rounded-lg px-4 py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-sm font-bold text-slate-200">
+                        {{ ro.position }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-slate-200">{{ ro.head.display_name }}</p>
+                        {% if ro.is_emergency %}<p class="text-xs text-orange-400">Urgence</p>{% endif %}
+                    </div>
+                </div>
+                <span class="badge-{{ ro.status }}">{{ ro.get_status_display }}</span>
+            </div>
+            {% empty %}
+            <p class="text-slate-500 text-sm text-center py-4">La rotation n'est pas encore générée.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Actions rapides membre -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <h2 class="font-semibold text-slate-100 mb-4">Actions</h2>
+    <div class="flex flex-wrap gap-3">
+        <a href="{% url 'contributions:list' %}" class="btn-secondary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            Mes contributions
+        </a>
+        <a href="{% url 'rotation:view' %}" class="btn-secondary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            Voir la rotation
+        </a>
+        <a href="{% url 'emergencies:submit' %}" class="btn-warning">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Soumettre une urgence
+        </a>
+        <a href="{% url 'notifications:list' %}" class="btn-secondary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            Notifications
+            {% if unread_notifications_count > 0 %}({{ unread_notifications_count }}){% endif %}
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

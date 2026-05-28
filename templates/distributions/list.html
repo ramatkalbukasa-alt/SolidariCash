@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Distributions — SolidariCash{% endblock %}
+{% block page_header %}Distributions{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Distributions</h1>
+    {% if user.is_admin %}
+    <a href="{% url 'rotation:view' %}" class="btn-primary">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Nouvelle distribution
+    </a>
+    {% endif %}
+</div>
+
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <table class="w-full data-table">
+        <thead>
+            <tr>
+                {% if user.is_admin %}<th>Membre</th>{% endif %}
+                <th>Tête</th><th>Cycle</th><th>Montant brut</th><th>Commission</th><th>Net distribué</th><th>Statut</th><th>Date</th>
+                {% if not user.is_admin %}<th>Reçu</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in distributions %}
+            <tr>
+                {% if user.is_admin %}<td class="text-slate-300">{{ d.head.member.full_name }}</td>{% endif %}
+                <td class="text-slate-400 text-xs">Tête #{{ d.head.head_number }}</td>
+                <td class="text-slate-400 text-xs">{{ d.cycle.name }}</td>
+                <td class="text-slate-300">{{ d.gross_amount }}</td>
+                <td class="text-yellow-400 text-xs">{{ d.commission_amount }}</td>
+                <td class="text-green-400 font-bold">{{ d.net_amount }}</td>
+                <td><span class="badge-{{ d.status }}">{{ d.get_status_display }}</span></td>
+                <td class="text-slate-500 text-xs">{{ d.processed_at|date:"d/m/Y"|default:"—" }}</td>
+                {% if not user.is_admin %}
+                <td>
+                    {% if d.status == 'completed' %}
+                    <a href="{% url 'reports:receipt_pdf' d.pk %}" class="text-xs text-green-400 hover:text-green-300">PDF →</a>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" class="text-center text-slate-500 py-8">Aucune distribution effectuée.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

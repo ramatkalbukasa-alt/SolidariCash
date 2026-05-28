@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Mon profil — SolidariCash{% endblock %}
+{% block page_header %}Mon profil{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl space-y-4">
+    <div class="form-card">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="w-14 h-14 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center justify-center text-xl font-bold text-green-400">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+            </div>
+            <div>
+                <p class="font-semibold text-slate-100 text-lg">{{ user.full_name }}</p>
+                <p class="text-sm text-slate-500">@{{ user.username }} · {{ user.get_role_display }}</p>
+            </div>
+        </div>
+        <h2 class="font-semibold text-slate-100 mb-4">Modifier le profil</h2>
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                <label class="block text-sm font-medium text-slate-400 mb-2">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<p class="mt-1 text-xs text-red-400">{{ field.errors.0 }}</p>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-primary">Enregistrer les modifications</button>
+        </form>
+    </div>
+    <div class="form-card">
+        <h2 class="font-semibold text-slate-100 mb-2">Sécurité</h2>
+        <p class="text-sm text-slate-500 mb-4">Modifiez votre mot de passe pour sécuriser votre compte.</p>
+        <a href="{% url 'auth:change_password' %}" class="btn-secondary">Changer le mot de passe</a>
+    </div>
+</div>
+{% endblock %}

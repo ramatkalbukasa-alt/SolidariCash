@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Rotation — SolidariCash{% endblock %}
+{% block page_header %}Ordre de rotation{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Rotation</h1>
+        {% if selected_cycle %}<p class="text-sm text-slate-500 mt-0.5">{{ selected_cycle.name }}</p>{% endif %}
+    </div>
+    <div class="flex gap-2">
+        <a href="{% url 'rotation:history' %}" class="btn-secondary">Historique</a>
+        {% if user.is_admin and selected_cycle and selected_cycle.status == 'pending' or selected_cycle.status == 'open' %}
+        <form method="post" action="{% url 'cycles:generate_rotation' selected_cycle.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">Régénérer</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Filtre cycle -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+    <form method="get" class="flex gap-3">
+        <select name="cycle" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer flex-1">
+            <option value="">— Sélectionner un cycle —</option>
+            {% for c in cycles %}
+            <option value="{{ c.pk }}" {% if selected_cycle and selected_cycle.pk == c.pk %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary text-sm">Afficher</button>
+    </form>
+</div>
+
+{% if not user.is_admin and my_positions %}
+<div class="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4 mb-4">
+    <p class="text-sm font-medium text-blue-300 mb-2">Mes positions dans ce cycle :</p>
+    <div class="flex flex-wrap gap-2">
+        {% for ro in my_positions %}
+        <div class="flex items-center gap-2 bg-slate-800/60 rounded-lg px-3 py-2">
+            <span class="text-xl font-bold text-blue-400">#{{ ro.position }}</span>
+            <div>
+                <p class="text-xs text-slate-300">{{ ro.head.display_name }}</p>
+                <span class="badge-{{ ro.status }} text-[10px]">{{ ro.get_status_display }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if rotation_orders %}
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <table class="w-full data-table">
+        <thead>
+            <tr><th class="w-16">Pos.</th><th>Membre</th><th>Tête</th><th>Statut</th><th>Urgence</th>
+            {% if user.is_admin %}<th>Actions</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for ro in rotation_orders %}
+            <tr class="{% if not user.is_admin and ro.head.member.user == user %}bg-blue-900/10{% endif %}">
+                <td>
+                    <div class="w-8 h-8 {% if ro.status == 'served' %}bg-green-900/40{% elif ro.is_emergency %}bg-orange-900/40{% else %}bg-slate-800{% endif %} rounded-lg flex items-center justify-center text-sm font-bold {% if ro.status == 'served' %}text-green-400{% elif ro.is_emergency %}text-orange-400{% else %}text-slate-200{% endif %}">
+                        {{ ro.position }}
+                    </div>
+                </td>
+                <td>
+                    <p class="text-slate-200 font-medium">{{ ro.head.member.full_name }}</p>
+                    {% if not user.is_admin and ro.head.member.user == user %}<span class="text-xs text-blue-400">← Moi</span>{% endif %}
+                </td>
+                <td class="text-slate-400 text-xs">Tête #{{ ro.head.head_number }}</td>
+                <td><span class="badge-{{ ro.status }}">{{ ro.get_status_display }}</span></td>
+                <td class="text-xs {% if ro.is_emergency %}text-orange-400{% else %}text-slate-600{% endif %}">
+                    {% if ro.is_emergency %}⚡ Urgence{% else %}—{% endif %}
+                </td>
+                {% if user.is_admin %}
+                <td>
+                    {% if ro.status == 'pending' %}
+                    <a href="{% url 'distributions:process' ro.pk %}" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Distribuer →</a>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% elif selected_cycle %}
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
+    <p class="text-slate-500 mb-4">Aucune rotation générée pour ce cycle.</p>
+    {% if user.is_admin %}
+    <form method="post" action="{% url 'cycles:generate_rotation' selected_cycle.pk %}">{% csrf_token %}
+        <button type="submit" class="btn-primary">Générer la rotation</button>
+    </form>
+    {% endif %}
+</div>
+{% else %}
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
+    <p class="text-slate-500">Sélectionnez un cycle pour voir la rotation.</p>
+</div>
+{% endif %}
+{% endblock %}

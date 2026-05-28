@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Soumettre une urgence — SolidariCash{% endblock %}
+{% block page_header %}Soumettre une urgence{% endblock %}
+
+{% block content %}
+<div class="max-w-lg">
+    <div class="bg-orange-900/20 border border-orange-800/30 rounded-xl p-4 mb-4">
+        <p class="text-sm text-orange-300 font-medium mb-1">Important</p>
+        <p class="text-xs text-orange-400">Une urgence modifie votre position dans la rotation. Elle doit être justifiée et ne peut être soumise qu'une fois par cycle.</p>
+        {% if active_cycle %}<p class="text-xs text-slate-500 mt-2">Cycle actif : {{ active_cycle.name }}</p>{% endif %}
+    </div>
+    <div class="form-card">
+        <h2 class="font-semibold text-slate-100 mb-5">Nouvelle demande d'urgence</h2>
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                <label class="block text-sm font-medium text-slate-400 mb-2">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>{% endif %}
+                {% if field.errors %}<p class="mt-1 text-xs text-red-400">{{ field.errors.0 }}</p>{% endif %}
+            </div>
+            {% endfor %}
+            <div class="flex gap-3 pt-2">
+                <button type="submit" class="btn-warning">Soumettre la demande</button>
+                <a href="{% url 'emergencies:list' %}" class="btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

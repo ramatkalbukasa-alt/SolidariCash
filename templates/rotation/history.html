@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Historique rotation — SolidariCash{% endblock %}
+{% block page_header %}Historique de rotation{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Historique de rotation</h1>
+    <a href="{% url 'rotation:view' %}" class="btn-secondary">← Retour rotation</a>
+</div>
+
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <table class="w-full data-table">
+        <thead><tr><th>Date</th><th>Action</th><th>Cycle</th><th>Tête</th><th>Pos. avant</th><th>Pos. après</th><th>Motif</th><th>Par</th></tr></thead>
+        <tbody>
+            {% for h in history %}
+            <tr>
+                <td class="text-slate-400 text-xs">{{ h.changed_at|date:"d/m/Y H:i" }}</td>
+                <td><span class="px-2 py-0.5 rounded text-xs font-medium
+                    {% if h.action == 'created' %}bg-blue-900/40 text-blue-400
+                    {% elif h.action == 'emergency' %}bg-orange-900/40 text-orange-400
+                    {% elif h.action == 'postponed' %}bg-yellow-900/40 text-yellow-400
+                    {% else %}bg-slate-700 text-slate-300{% endif %}">
+                    {{ h.get_action_display }}</span>
+                </td>
+                <td class="text-slate-400 text-xs">{{ h.rotation_order.cycle.name }}</td>
+                <td class="text-slate-300">{{ h.rotation_order.head.member.full_name }}</td>
+                <td class="text-slate-400">{{ h.previous_position|default:"—" }}</td>
+                <td class="text-slate-300 font-medium">{{ h.new_position|default:"—" }}</td>
+                <td class="text-slate-500 text-xs max-w-xs truncate">{{ h.reason|default:"—" }}</td>
+                <td class="text-slate-400 text-xs">{{ h.changed_by|default:"Système" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-center text-slate-500 py-8">Aucun historique disponible.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

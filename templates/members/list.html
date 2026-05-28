@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Membres — SolidariCash{% endblock %}
+{% block page_header %}Gestion des membres{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Membres</h1>
+        <p class="text-sm text-slate-500 mt-0.5">{{ total_count }} membre{{ total_count|pluralize }} au total</p>
+    </div>
+    <a href="{% url 'members:create' %}" class="btn-primary">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+        Ajouter un membre
+    </a>
+</div>
+
+<!-- Filtres -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+    <form method="get" class="flex flex-wrap gap-3">
+        <div class="flex-1 min-w-48">
+            <input type="text" name="q" value="{{ search }}" placeholder="Rechercher un membre..."
+                class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-slate-500">
+        </div>
+        <select name="status" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+            <option value="">Tous les statuts</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary text-sm">Filtrer</button>
+        {% if search or status_filter %}
+        <a href="{% url 'members:list' %}" class="btn-secondary text-sm">Réinitialiser</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Table -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <table class="w-full data-table">
+        <thead>
+            <tr>
+                <th>Membre</th>
+                <th>Têtes</th>
+                <th>Statut</th>
+                <th>Inscrit le</th>
+                <th class="text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td>
+                    <div>
+                        <p class="font-medium text-slate-200">{{ member.full_name }}</p>
+                        <p class="text-xs text-slate-500">{{ member.user.email }} · {{ member.user.username }}</p>
+                    </div>
+                </td>
+                <td>
+                    <span class="text-slate-300 font-medium">{{ member.heads_count }}</span>
+                    <span class="text-slate-500 text-xs"> tête{{ member.heads_count|pluralize }}</span>
+                </td>
+                <td><span class="badge-{{ member.status }}">{{ member.get_status_display }}</span></td>
+                <td class="text-slate-400 text-xs">{{ member.joined_at|date:"d/m/Y" }}</td>
+                <td class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        <a href="{% url 'members:detail' member.pk %}" class="btn-secondary text-xs py-1.5 px-3">Voir</a>
+                        <a href="{% url 'members:update' member.pk %}" class="btn-secondary text-xs py-1.5 px-3">Modifier</a>
+                        {% if member.status == 'active' %}
+                        <a href="{% url 'members:suspend' member.pk %}" class="btn-warning text-xs py-1.5 px-3">Suspendre</a>
+                        {% else %}
+                        <form method="post" action="{% url 'members:activate' member.pk %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary text-xs py-1.5 px-3">Réactiver</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center py-12">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <p class="text-slate-500">Aucun membre trouvé</p>
+                        <a href="{% url 'members:create' %}" class="btn-primary text-sm">Ajouter le premier membre</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if members.has_other_pages %}
+    <div class="px-5 py-4 border-t border-slate-800 flex items-center justify-between">
+        <p class="text-sm text-slate-500">Page {{ members.number }} / {{ members.paginator.num_pages }}</p>
+        <div class="flex gap-2">
+            {% if members.has_previous %}
+            <a href="?page={{ members.previous_page_number }}&q={{ search }}&status={{ status_filter }}" class="btn-secondary text-xs">← Précédent</a>
+            {% endif %}
+            {% if members.has_next %}
+            <a href="?page={{ members.next_page_number }}&q={{ search }}&status={{ status_filter }}" class="btn-secondary text-xs">Suivant →</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

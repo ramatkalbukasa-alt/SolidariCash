@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Journal d'audit — SolidariCash{% endblock %}
+{% block page_header %}Journal d'audit{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Journal d'audit</h1>
+</div>
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+    <table class="w-full data-table">
+        <thead><tr><th>Date</th><th>Utilisateur</th><th>Action</th><th>Objet</th><th>IP</th></tr></thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td class="text-slate-400 text-xs">{{ log.timestamp|date:"d/m/Y H:i:s" }}</td>
+                <td class="text-slate-300">{{ log.user|default:"Système" }}</td>
+                <td><span class="px-2 py-0.5 rounded text-xs bg-slate-700 text-slate-300">{{ log.get_action_display }}</span></td>
+                <td class="text-slate-400 text-xs">{{ log.model_name }} #{{ log.object_id }} — {{ log.object_repr|truncatechars:40 }}</td>
+                <td class="text-slate-600 text-xs">{{ log.ip_address|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-slate-500 py-8">Aucun log.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

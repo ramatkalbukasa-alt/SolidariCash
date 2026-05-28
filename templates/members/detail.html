@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}{{ member.full_name }} — SolidariCash{% endblock %}
+{% block page_header %}Fiche membre{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="flex items-center gap-4">
+        <a href="{% url 'members:list' %}" class="text-slate-400 hover:text-white transition-colors cursor-pointer">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </a>
+        <div>
+            <h1 class="page-title">{{ member.full_name }}</h1>
+            <p class="text-sm text-slate-500">@{{ member.user.username }}</p>
+        </div>
+    </div>
+    {% if user.is_admin %}
+    <div class="flex gap-2">
+        <a href="{% url 'members:update' member.pk %}" class="btn-secondary">Modifier</a>
+        <a href="{% url 'members:add_head' member.pk %}" class="btn-primary">+ Tête</a>
+        {% if member.status == 'active' %}
+        <a href="{% url 'members:suspend' member.pk %}" class="btn-warning">Suspendre</a>
+        {% else %}
+        <form method="post" action="{% url 'members:activate' member.pk %}">{% csrf_token %}
+            <button type="submit" class="btn-primary">Réactiver</button>
+        </form>
+        {% endif %}
+        <a href="{% url 'members:delete' member.pk %}" class="btn-danger">Supprimer</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+    <!-- Infos membre -->
+    <div class="form-card">
+        <h2 class="font-semibold text-slate-100 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            Informations
+        </h2>
+        <div class="space-y-3">
+            {% for label, val in info_items %}
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-500">{{ label }}</span>
+                <span class="text-slate-200 font-medium">{{ val }}</span>
+            </div>
+            {% endfor %}
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-500">Email</span>
+                <span class="text-slate-200">{{ member.user.email }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-500">Téléphone</span>
+                <span class="text-slate-200">{{ member.user.phone|default:"—" }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-500">Statut</span>
+                <span class="badge-{{ member.status }}">{{ member.get_status_display }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-500">Inscrit le</span>
+                <span class="text-slate-200">{{ member.joined_at|date:"d/m/Y" }}</span>
+            </div>
+            {% if member.suspension_reason %}
+            <div class="pt-3 border-t border-slate-800">
+                <p class="text-xs text-orange-400 font-medium mb-1">Motif de suspension</p>
+                <p class="text-xs text-slate-400">{{ member.suspension_reason }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Têtes -->
+    <div class="form-card">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-slate-100 flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                Têtes ({{ heads.count }})
+            </h2>
+            {% if user.is_admin %}
+            <a href="{% url 'members:add_head' member.pk %}" class="text-xs text-green-400 hover:text-green-300">+ Ajouter</a>
+            {% endif %}
+        </div>
+        <div class="space-y-2">
+            {% for head in heads %}
+            <div class="flex items-center justify-between bg-slate-800/50 rounded-lg px-3 py-2">
+                <div>
+                    <p class="text-sm font-medium text-slate-200">Tête #{{ head.head_number }}</p>
+                    {% if head.label %}<p class="text-xs text-slate-500">{{ head.label }}</p>{% endif %}
+                </div>
+                <span class="badge-{{ head.status }}">{{ head.get_status_display }}</span>
+            </div>
+            {% empty %}
+            <p class="text-slate-500 text-sm text-center py-4">Aucune tête.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Urgences récentes -->
+    <div class="form-card">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-slate-100 flex items-center gap-2">
+                <svg class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                Urgences récentes
+            </h2>
+        </div>
+        <div class="space-y-2">
+            {% for e in emergencies %}
+            <div class="bg-slate-800/50 rounded-lg px-3 py-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-slate-400">{{ e.cycle.name }}</span>
+                    <span class="badge-{{ e.status }}">{{ e.get_status_display }}</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-1 truncate">{{ e.reason|truncatechars:60 }}</p>
+            </div>
+            {% empty %}
+            <p class="text-slate-500 text-sm text-center py-4">Aucune urgence.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Contributions récentes -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl mb-4">
+    <div class="px-5 py-4 border-b border-slate-800">
+        <h2 class="font-semibold text-slate-100">Contributions récentes</h2>
+    </div>
+    <table class="w-full data-table">
+        <thead><tr>
+            <th>Tête</th><th>Cycle</th><th>Montant dû</th><th>Payé</th><th>Statut</th><th>Date</th>
+        </tr></thead>
+        <tbody>
+            {% for c in contributions %}
+            <tr>
+                <td class="text-slate-300">Tête #{{ c.head.head_number }}</td>
+                <td class="text-slate-400">{{ c.cycle.name }}</td>
+                <td class="text-slate-300">{{ c.amount_due }}</td>
+                <td class="{% if c.is_paid %}text-green-400{% else %}text-slate-400{% endif %}">{{ c.amount_paid }}</td>
+                <td><span class="badge-{{ c.status }}">{{ c.get_status_display }}</span></td>
+                <td class="text-slate-500 text-xs">{{ c.created_at|date:"d/m/Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-slate-500 py-6">Aucune contribution.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Rotation récente -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl">
+    <div class="px-5 py-4 border-b border-slate-800">
+        <h2 class="font-semibold text-slate-100">Historique de rotation</h2>
+    </div>
+    <table class="w-full data-table">
+        <thead><tr>
+            <th>Cycle</th><th>Tête</th><th>Position</th><th>Statut</th><th>Urgence</th>
+        </tr></thead>
+        <tbody>
+            {% for ro in rotation_orders %}
+            <tr>
+                <td class="text-slate-300">{{ ro.cycle.name }}</td>
+                <td class="text-slate-400">Tête #{{ ro.head.head_number }}</td>
+                <td class="text-slate-300 font-medium">{{ ro.position }}</td>
+                <td><span class="badge-{{ ro.status }}">{{ ro.get_status_display }}</span></td>
+                <td class="text-xs {% if ro.is_emergency %}text-orange-400{% else %}text-slate-500{% endif %}">
+                    {% if ro.is_emergency %}Oui{% else %}Non{% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-slate-500 py-6">Aucune rotation.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
