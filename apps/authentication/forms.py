@@ -34,13 +34,60 @@ class UserCreateForm(UserCreationForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'avatar']
+        fields = ['first_name', 'last_name', 'email', 'phone', 'address']
+        labels = {
+            'first_name': 'Prénom',
+            'last_name': 'Nom de famille',
+            'email': 'Adresse email',
+            'phone': 'Téléphone',
+            'address': 'Adresse',
+        }
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500',
+                'placeholder': 'Votre prénom',
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500',
+                'placeholder': 'Votre nom',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500',
+                'placeholder': 'votre@email.com',
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500',
+                'placeholder': '+XXX XXX XXX XXX',
+            }),
+            'address': forms.Textarea(attrs={
+                'class': 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none',
+                'rows': 3,
+                'placeholder': 'Votre adresse complète',
+            }),
+        }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        field_class = 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent'
-        for field in self.fields.values():
-            field.widget.attrs['class'] = field_class
+
+class AvatarUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['avatar']
+        labels = {'avatar': 'Photo de profil'}
+        widgets = {
+            'avatar': forms.FileInput(attrs={
+                'class': 'hidden',
+                'accept': 'image/*',
+                'id': 'avatar-input',
+            }),
+        }
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if avatar:
+            if avatar.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("La photo ne doit pas dépasser 5 Mo.")
+            if not avatar.content_type.startswith('image/'):
+                raise forms.ValidationError("Le fichier doit être une image (JPG, PNG, WebP...).")
+        return avatar
 
 
 class ChangePasswordForm(forms.Form):

@@ -1,8 +1,8 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 from . import api_views
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register(r'', api_views.MemberViewSet, basename='member')
 
 urlpatterns = router.urls

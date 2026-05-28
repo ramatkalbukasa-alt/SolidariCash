@@ -2,54 +2,126 @@
 {% block title %}Connexion — SolidariCash{% endblock %}
 
 {% block auth_content %}
-<div class="min-h-screen bg-[#020617] flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-        <!-- Logo -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 bg-green-500 rounded-2xl mb-4 shadow-lg shadow-green-500/20">
-                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+<div class="min-h-screen flex" style="background:#FAFAFA;">
+
+    <!-- ── LEFT PANEL — Branding ── -->
+    <div class="hidden lg:flex w-1/2 flex-col items-center justify-center p-16 relative overflow-hidden"
+         style="background:linear-gradient(145deg,#0040CC,#0052FF 45%,#4D7CFF);">
+
+        <!-- Dot pattern texture -->
+        <div class="absolute inset-0 pointer-events-none"
+             style="background-image:radial-gradient(circle,rgba(255,255,255,.12) 1px,transparent 1px);background-size:28px 28px;"></div>
+
+        <!-- Rotating decorative ring -->
+        <div class="absolute anim-spin-slow pointer-events-none"
+             style="width:460px;height:460px;border:1.5px dashed rgba(255,255,255,.18);border-radius:50%;"></div>
+        <div class="absolute anim-spin-slow pointer-events-none"
+             style="width:320px;height:320px;border:1px dashed rgba(255,255,255,.1);border-radius:50%;animation-duration:80s;animation-direction:reverse;"></div>
+
+        <!-- Content -->
+        <div class="relative z-10 text-center text-white max-w-sm">
+            <!-- Icon -->
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8"
+                 style="background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);">
+                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold text-white">SolidariCash</h1>
-            <p class="text-slate-500 text-sm mt-1">Plateforme de gestion tontine</p>
+
+            <h1 class="font-display text-5xl text-white mb-4 anim-fade-up" style="line-height:1.1;">SolidariCash</h1>
+            <p class="text-blue-100 text-lg mb-12 anim-fade-up delay-1">
+                Plateforme de gestion de tontine moderne et sécurisée.
+            </p>
+
+            <!-- Stats -->
+            <div class="flex items-center justify-center gap-8 anim-fade-up delay-2">
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-white">100%</p>
+                    <p class="text-blue-200 text-xs mt-0.5 font-mono-ui uppercase tracking-widest">Sécurisé</p>
+                </div>
+                <div class="w-px h-10" style="background:rgba(255,255,255,.2);"></div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-white">∞</p>
+                    <p class="text-blue-200 text-xs mt-0.5 font-mono-ui uppercase tracking-widest">Cycles</p>
+                </div>
+                <div class="w-px h-10" style="background:rgba(255,255,255,.2);"></div>
+                <div class="text-center">
+                    <p class="text-3xl font-bold text-white">Auto</p>
+                    <p class="text-blue-200 text-xs mt-0.5 font-mono-ui uppercase tracking-widest">Rotation</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Card -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
-            <h2 class="text-lg font-semibold text-slate-100 mb-6">Connexion à votre compte</h2>
+        <!-- Bottom glow -->
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
+             style="width:500px;height:200px;background:radial-gradient(ellipse,rgba(255,255,255,.08),transparent 70%);"></div>
+    </div>
 
+    <!-- ── RIGHT PANEL — Form ── -->
+    <div class="flex-1 flex items-center justify-center p-8">
+        <div class="w-full max-w-md anim-fade-up">
+
+            <!-- Mobile logo -->
+            <div class="flex items-center gap-2.5 mb-8 lg:hidden">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center"
+                     style="background:linear-gradient(135deg,#0052FF,#4D7CFF);">
+                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <span class="font-display text-xl gradient-text">SolidariCash</span>
+            </div>
+
+            <!-- Section label -->
+            <div class="section-label mb-5">
+                <span class="w-1.5 h-1.5 rounded-full anim-pulse" style="background:#0052FF;display:inline-block;"></span>
+                Connexion sécurisée
+            </div>
+
+            <h2 class="font-display text-3xl mb-2" style="color:#0F172A;">Bienvenue</h2>
+            <p class="text-sm mb-8" style="color:#64748B;">Connectez-vous à votre espace SolidariCash</p>
+
+            <!-- Error -->
             {% if form.non_field_errors %}
-            <div class="mb-4 px-4 py-3 bg-red-900/30 border border-red-800/50 rounded-lg text-red-300 text-sm">
+            <div class="flex items-center gap-2.5 px-4 py-3 rounded-xl mb-5 text-sm font-medium msg-error">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
                 {{ form.non_field_errors.0 }}
             </div>
             {% endif %}
 
             <form method="post" class="space-y-4">
                 {% csrf_token %}
+
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Nom d'utilisateur</label>
+                    <label class="block text-sm font-medium mb-1.5" style="color:#374151;">Nom d'utilisateur</label>
                     {{ form.username }}
                     {% if form.username.errors %}
-                    <p class="mt-1 text-xs text-red-400">{{ form.username.errors.0 }}</p>
+                    <p class="mt-1.5 text-xs" style="color:#EF4444;">{{ form.username.errors.0 }}</p>
                     {% endif %}
                 </div>
+
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Mot de passe</label>
+                    <label class="block text-sm font-medium mb-1.5" style="color:#374151;">Mot de passe</label>
                     {{ form.password }}
                     {% if form.password.errors %}
-                    <p class="mt-1 text-xs text-red-400">{{ form.password.errors.0 }}</p>
+                    <p class="mt-1.5 text-xs" style="color:#EF4444;">{{ form.password.errors.0 }}</p>
                     {% endif %}
                 </div>
-                <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-all duration-150 mt-2 cursor-pointer text-sm">
+
+                <button type="submit" class="btn-primary w-full justify-center py-3 mt-2 text-base">
                     Se connecter
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
                 </button>
             </form>
-        </div>
 
-        <p class="text-center text-xs text-slate-600 mt-6">
-            © {{ now.year }} SolidariCash — Système de gestion tontine sécurisé
-        </p>
+            <p class="text-center text-xs mt-8" style="color:#94A3B8;">
+                © 2025 SolidariCash — Système de gestion tontine
+            </p>
+        </div>
     </div>
 </div>
-{% endblock %}
+{% endblock auth_content %}

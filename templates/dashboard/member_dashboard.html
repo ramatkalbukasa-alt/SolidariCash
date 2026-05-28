@@ -1,105 +1,160 @@
 {% extends 'base.html' %}
-{% block title %}Mon tableau de bord — SolidariCash{% endblock %}
-{% block page_header %}Mon tableau de bord{% endblock %}
+{% block title %}Mon espace — SolidariCash{% endblock %}
+{% block page_header %}Mon espace{% endblock %}
 
 {% block content %}
 {% if not member %}
-<div class="bg-orange-900/20 border border-orange-800/40 rounded-xl p-6 text-center">
-    <p class="text-orange-300">Votre profil membre n'est pas encore configuré. Contactez l'administrateur.</p>
+<div class="form-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#FEF9C3;">
+        <svg class="w-6 h-6" style="color:#A16207;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <div>
+        <p class="font-semibold" style="color:#0F172A;">Profil incomplet</p>
+        <p class="text-sm" style="color:#64748B;">Votre profil membre n'est pas encore configuré. Contactez l'administrateur.</p>
+    </div>
 </div>
 {% else %}
 
-<!-- Stat Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="stat-card">
-        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Mes têtes</p>
-        <p class="text-3xl font-bold text-white">{{ my_heads.count }}</p>
-        <p class="text-xs text-slate-500 mt-1">têtes actives</p>
+<!-- Page header -->
+<div class="page-header">
+    <div>
+        <div class="section-label mb-2">
+            <span class="w-1.5 h-1.5 rounded-full anim-pulse" style="background:#0052FF;display:inline-block;"></span>
+            Mon espace
+        </div>
+        <h1 class="page-title">Bonjour, {{ user.first_name }} 👋</h1>
     </div>
-    <div class="stat-card">
-        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Contributions payées</p>
-        <p class="text-3xl font-bold text-green-400">
-            {{ my_contributions|length }}
-        </p>
-        <p class="text-xs text-slate-500 mt-1">ce cycle</p>
-    </div>
-    <div class="stat-card">
-        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Ma prochaine position</p>
-        <p class="text-3xl font-bold text-blue-400">
-            {% if next_distribution %}{{ next_distribution.position }}{% else %}—{% endif %}
-        </p>
-        <p class="text-xs text-slate-500 mt-1">dans la rotation</p>
-    </div>
-    <div class="stat-card">
-        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-2">Statut compte</p>
-        <p class="text-3xl font-bold {% if member.status == 'active' %}text-green-400{% else %}text-orange-400{% endif %}">
-            {{ member.get_status_display }}
-        </p>
-        <p class="text-xs text-slate-500 mt-1">{{ member.head_count }} tête(s)</p>
+    <div class="flex gap-2">
+        <a href="{% url 'emergencies:submit' %}" class="btn-warning">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Urgence
+        </a>
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+<!-- Stat Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="stat-card anim-fade-up">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#0052FF,#4D7CFF);box-shadow:0 4px 12px rgba(0,82,255,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Têtes</span>
+        </div>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ my_heads.count }}</p>
+        <p class="text-xs" style="color:#64748B;">têtes actives</p>
+    </div>
+
+    <div class="stat-card anim-fade-up delay-1">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#059669,#34D399);box-shadow:0 4px 12px rgba(5,150,105,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Contribs</span>
+        </div>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ my_contributions|length }}</p>
+        <p class="text-xs" style="color:#64748B;">ce cycle</p>
+    </div>
+
+    <div class="stat-card anim-fade-up delay-2">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                 style="background:linear-gradient(135deg,#7C3AED,#A78BFA);box-shadow:0 4px 12px rgba(124,58,237,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Position</span>
+        </div>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{% if next_distribution %}#{{ next_distribution.position }}{% else %}—{% endif %}</p>
+        <p class="text-xs" style="color:#64748B;">dans la rotation</p>
+    </div>
+
+    <div class="stat-card anim-fade-up delay-3">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center {% if member.status == 'active' %}icon-bg-green{% else %}icon-bg-amber{% endif %}">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Statut</span>
+        </div>
+        <p class="text-base font-bold mb-1" style="color:#0F172A;">{{ member.get_status_display }}</p>
+        <p class="text-xs" style="color:#64748B;">{{ member.head_count }} tête{{ member.head_count|pluralize }}</p>
+    </div>
+</div>
+
+<!-- Contributions + Rotation -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+
     <!-- Contributions cycle actif -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
-            <h2 class="font-semibold text-slate-100">Contributions — cycle actif</h2>
-            <a href="{% url 'contributions:list' %}" class="text-xs text-green-400 hover:text-green-300">Voir tout →</a>
+    <div class="form-card p-0 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4" style="border-bottom:1px solid #E2E8F0;">
+            <h2 class="font-semibold" style="color:#0F172A;">Contributions — cycle actif</h2>
+            <a href="{% url 'contributions:list' %}" class="text-xs font-medium" style="color:#0052FF;">Voir tout →</a>
         </div>
         {% if active_cycle %}
         <div class="p-4 space-y-2">
             {% for contrib in my_contributions %}
-            <div class="flex items-center justify-between bg-slate-800/50 rounded-lg px-4 py-3">
+            <div class="flex items-center justify-between rounded-xl px-4 py-3" style="background:#F8FAFC;border:1px solid #E2E8F0;">
                 <div>
-                    <p class="text-sm font-medium text-slate-200">{{ contrib.head.display_name }}</p>
-                    <p class="text-xs text-slate-500">Dû : {{ contrib.amount_due }} | Payé : {{ contrib.amount_paid }}</p>
+                    <p class="text-sm font-semibold" style="color:#0F172A;">{{ contrib.head.display_name }}</p>
+                    <p class="text-xs mt-0.5 font-mono-ui" style="color:#94A3B8;">Dû : {{ contrib.amount_due }} · Payé : {{ contrib.amount_paid }}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="badge-{{ contrib.status }}">{{ contrib.get_status_display }}</span>
                     {% if contrib.status == 'pending' %}
-                    <a href="{% url 'contributions:submit' contrib.pk %}" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Payer →</a>
+                    <a href="{% url 'contributions:submit' contrib.pk %}" class="btn-primary" style="padding:.3rem .75rem;font-size:.75rem;">Payer</a>
                     {% endif %}
                 </div>
             </div>
             {% empty %}
-            <p class="text-slate-500 text-sm text-center py-4">Aucune contribution pour ce cycle.</p>
+            <div class="flex flex-col items-center py-8 gap-2">
+                <svg class="w-8 h-8" style="color:#CBD5E1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p class="text-sm" style="color:#94A3B8;">Aucune contribution pour ce cycle.</p>
+            </div>
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-slate-500 text-sm text-center py-8">Aucun cycle actif en ce moment.</p>
+        <div class="flex flex-col items-center py-10 gap-2">
+            <svg class="w-8 h-8" style="color:#CBD5E1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <p class="text-sm" style="color:#94A3B8;">Aucun cycle actif en ce moment.</p>
+        </div>
         {% endif %}
     </div>
 
-    <!-- Ma rotation -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
-            <h2 class="font-semibold text-slate-100">Mes positions de rotation</h2>
-            <a href="{% url 'rotation:view' %}" class="text-xs text-green-400 hover:text-green-300">Voir tout →</a>
+    <!-- Mes positions de rotation -->
+    <div class="form-card p-0 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4" style="border-bottom:1px solid #E2E8F0;">
+            <h2 class="font-semibold" style="color:#0F172A;">Mes positions de rotation</h2>
+            <a href="{% url 'rotation:view' %}" class="text-xs font-medium" style="color:#0052FF;">Voir tout →</a>
         </div>
         <div class="p-4 space-y-2">
             {% for ro in my_rotation_positions %}
-            <div class="flex items-center justify-between bg-slate-800/50 rounded-lg px-4 py-3">
+            <div class="flex items-center justify-between rounded-xl px-4 py-3" style="background:#F8FAFC;border:1px solid #E2E8F0;">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-sm font-bold text-slate-200">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold"
+                         style="background:linear-gradient(135deg,#0052FF,#4D7CFF);color:#fff;">
                         {{ ro.position }}
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-slate-200">{{ ro.head.display_name }}</p>
-                        {% if ro.is_emergency %}<p class="text-xs text-orange-400">Urgence</p>{% endif %}
+                        <p class="text-sm font-semibold" style="color:#0F172A;">{{ ro.head.display_name }}</p>
+                        {% if ro.is_emergency %}<p class="text-xs" style="color:#F59E0B;">⚡ Urgence</p>{% endif %}
                     </div>
                 </div>
                 <span class="badge-{{ ro.status }}">{{ ro.get_status_display }}</span>
             </div>
             {% empty %}
-            <p class="text-slate-500 text-sm text-center py-4">La rotation n'est pas encore générée.</p>
+            <div class="flex flex-col items-center py-8 gap-2">
+                <svg class="w-8 h-8" style="color:#CBD5E1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                <p class="text-sm" style="color:#94A3B8;">La rotation n'est pas encore générée.</p>
+            </div>
             {% endfor %}
         </div>
     </div>
 </div>
 
-<!-- Actions rapides membre -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-    <h2 class="font-semibold text-slate-100 mb-4">Actions</h2>
+<!-- Quick actions -->
+<div class="form-card">
+    <div class="section-label mb-4">Actions rapides</div>
     <div class="flex flex-wrap gap-3">
         <a href="{% url 'contributions:list' %}" class="btn-secondary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -107,7 +162,7 @@
         </a>
         <a href="{% url 'rotation:view' %}" class="btn-secondary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-            Voir la rotation
+            Rotation
         </a>
         <a href="{% url 'emergencies:submit' %}" class="btn-warning">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
@@ -115,8 +170,7 @@
         </a>
         <a href="{% url 'notifications:list' %}" class="btn-secondary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            Notifications
-            {% if unread_notifications_count > 0 %}({{ unread_notifications_count }}){% endif %}
+            Notifications{% if unread_notifications_count > 0 %} <span class="ml-1 px-1.5 py-0.5 rounded-full text-white text-[10px] font-bold" style="background:#0052FF;">{{ unread_notifications_count }}</span>{% endif %}
         </a>
     </div>
 </div>

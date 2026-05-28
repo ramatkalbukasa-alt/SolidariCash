@@ -3,171 +3,241 @@
 {% block page_header %}Tableau de bord{% endblock %}
 
 {% block content %}
-<!-- Stat Cards -->
+
+<!-- Header row -->
+<div class="page-header">
+    <div>
+        <div class="section-label mb-2">
+            <span class="w-1.5 h-1.5 rounded-full anim-pulse" style="background:#0052FF;display:inline-block;"></span>
+            Vue d'ensemble
+        </div>
+        <h1 class="page-title">Bonjour, {{ user.first_name }} 👋</h1>
+    </div>
+    <a href="{% url 'members:create' %}" class="btn-primary">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Nouveau membre
+    </a>
+</div>
+
+<!-- ── Stat Cards ── -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-3">
-            <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Membres actifs</p>
-            <div class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+
+    <div class="stat-card anim-fade-up">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:linear-gradient(135deg,#0052FF,#4D7CFF);box-shadow:0 4px 12px rgba(0,82,255,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Membres</span>
         </div>
-        <p class="text-3xl font-bold text-white">{{ active_members }}</p>
-        <p class="text-xs text-slate-500 mt-1">sur {{ total_members }} total</p>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ active_members }}</p>
+        <p class="text-xs" style="color:#64748B;">actifs · {{ total_members }} total</p>
     </div>
 
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-3">
-            <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Têtes actives</p>
-            <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+    <div class="stat-card anim-fade-up delay-1">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:linear-gradient(135deg,#7C3AED,#A78BFA);box-shadow:0 4px 12px rgba(124,58,237,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
             </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Têtes</span>
         </div>
-        <p class="text-3xl font-bold text-white">{{ total_heads }}</p>
-        <p class="text-xs text-slate-500 mt-1">têtes enregistrées</p>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ total_heads }}</p>
+        <p class="text-xs" style="color:#64748B;">enregistrées</p>
     </div>
 
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-3">
-            <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Collecté (cycle actif)</p>
-            <div class="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <div class="stat-card anim-fade-up delay-2">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:linear-gradient(135deg,#059669,#34D399);box-shadow:0 4px 12px rgba(5,150,105,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Collecté</span>
         </div>
-        <p class="text-3xl font-bold text-white">{{ total_collected|default:"0" }}</p>
-        <p class="text-xs text-slate-500 mt-1">{% if active_cycle %}{{ active_cycle.name }}{% else %}Aucun cycle actif{% endif %}</p>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ total_collected|default:"0" }}</p>
+        <p class="text-xs" style="color:#64748B;">{% if active_cycle %}{{ active_cycle.name }}{% else %}Aucun cycle{% endif %}</p>
     </div>
 
-    <div class="stat-card">
-        <div class="flex items-center justify-between mb-3">
-            <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Urgences en attente</p>
-            <div class="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
-                <svg class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    <div class="stat-card anim-fade-up delay-3">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                 style="background:linear-gradient(135deg,#DC2626,#F87171);box-shadow:0 4px 12px rgba(220,38,38,.25);">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
             </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Urgences</span>
         </div>
-        <p class="text-3xl font-bold text-white">{{ pending_emergencies }}</p>
-        <p class="text-xs text-slate-500 mt-1">demandes à traiter</p>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ pending_emergencies }}</p>
+        <p class="text-xs" style="color:#64748B;">en attente</p>
     </div>
 </div>
 
-<!-- Cycle actif + Actions rapides -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-    <!-- Cycle actif -->
-    <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="font-semibold text-slate-100">Cycle actif</h2>
-            <a href="{% url 'cycles:list' %}" class="text-xs text-green-400 hover:text-green-300 transition-colors">Voir tous →</a>
-        </div>
+<!-- ── Cycle actif + Actions ── -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+
+    <!-- Cycle actif — gradient border card -->
+    <div class="lg:col-span-2">
         {% if active_cycle %}
-        <div class="space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-slate-400 text-sm">Nom</span>
-                <span class="text-slate-100 font-medium text-sm">{{ active_cycle.name }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-400 text-sm">Statut</span>
-                <span class="badge-open">{{ active_cycle.get_status_display }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-400 text-sm">Période</span>
-                <span class="text-slate-100 text-sm">{{ active_cycle.start_date|date:"d/m/Y" }} — {{ active_cycle.end_date|date:"d/m/Y" }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-400 text-sm">Montant/tête</span>
-                <span class="text-green-400 font-semibold">{{ active_cycle.contribution_amount }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-400 text-sm">Contributions en attente</span>
-                <span class="badge-pending">{{ pending_contributions }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-400 text-sm">Distributions effectuées</span>
-                <span class="badge-served">{{ distribution_count }}</span>
-            </div>
-            <div class="pt-3 border-t border-slate-800 flex gap-2">
-                <a href="{% url 'cycles:detail' active_cycle.pk %}" class="btn-primary text-xs">Gérer le cycle</a>
-                <a href="{% url 'contributions:list' %}?cycle={{ active_cycle.pk }}" class="btn-secondary text-xs">Contributions</a>
+        <div class="accent-card h-full">
+            <div class="accent-card-inner">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <div class="section-label mb-2">
+                            <span class="w-1.5 h-1.5 rounded-full anim-pulse" style="background:#0052FF;display:inline-block;"></span>
+                            Cycle actif
+                        </div>
+                        <h2 class="font-display text-xl" style="color:#0F172A;">{{ active_cycle.name }}</h2>
+                    </div>
+                    <span class="badge-open">{{ active_cycle.get_status_display }}</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-5">
+                    <div class="rounded-xl p-3" style="background:#F8FAFC;">
+                        <p class="text-xs font-mono-ui uppercase tracking-widest mb-1" style="color:#94A3B8;">Période</p>
+                        <p class="text-sm font-semibold" style="color:#0F172A;">{{ active_cycle.start_date|date:"d/m/Y" }}</p>
+                        <p class="text-xs" style="color:#64748B;">→ {{ active_cycle.end_date|date:"d/m/Y" }}</p>
+                    </div>
+                    <div class="rounded-xl p-3" style="background:#F8FAFC;">
+                        <p class="text-xs font-mono-ui uppercase tracking-widest mb-1" style="color:#94A3B8;">Montant / tête</p>
+                        <p class="text-lg font-bold gradient-text">{{ active_cycle.contribution_amount }}</p>
+                    </div>
+                    <div class="rounded-xl p-3" style="background:#FEF9C3;">
+                        <p class="text-xs font-mono-ui uppercase tracking-widest mb-1" style="color:#A16207;">En attente</p>
+                        <p class="text-2xl font-bold" style="color:#A16207;">{{ pending_contributions }}</p>
+                        <p class="text-xs" style="color:#A16207;">contributions</p>
+                    </div>
+                    <div class="rounded-xl p-3" style="background:#EFF6FF;">
+                        <p class="text-xs font-mono-ui uppercase tracking-widest mb-1" style="color:#1D4ED8;">Distributions</p>
+                        <p class="text-2xl font-bold" style="color:#1D4ED8;">{{ distribution_count }}</p>
+                        <p class="text-xs" style="color:#1D4ED8;">effectuées</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <a href="{% url 'cycles:detail' active_cycle.pk %}" class="btn-primary">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Gérer le cycle
+                    </a>
+                    <a href="{% url 'contributions:list' %}?cycle={{ active_cycle.pk }}" class="btn-secondary">Contributions</a>
+                </div>
             </div>
         </div>
         {% else %}
-        <div class="text-center py-8">
-            <div class="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <div class="form-card h-full flex flex-col items-center justify-center py-12 text-center">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style="background:#F1F5F9;">
+                <svg class="w-7 h-7" style="color:#94A3B8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             </div>
-            <p class="text-slate-500 text-sm mb-3">Aucun cycle actif</p>
-            <a href="{% url 'cycles:create' %}" class="btn-primary text-xs">Créer un cycle</a>
+            <h3 class="font-display text-lg mb-1" style="color:#0F172A;">Aucun cycle actif</h3>
+            <p class="text-sm mb-4" style="color:#64748B;">Créez un nouveau cycle pour commencer</p>
+            <a href="{% url 'cycles:create' %}" class="btn-primary">Créer un cycle</a>
         </div>
         {% endif %}
     </div>
 
     <!-- Actions rapides -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <h2 class="font-semibold text-slate-100 mb-4">Actions rapides</h2>
+    <div class="form-card">
+        <div class="section-label mb-4">Actions rapides</div>
         <div class="space-y-2">
-            <a href="{% url 'members:create' %}" class="flex items-center gap-3 px-3 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors cursor-pointer">
-                <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                Ajouter un membre
+            {% with actions=True %}
+            <a href="{% url 'members:create' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all cursor-pointer group" style="color:#374151;" onmouseenter="this.style.background='#F1F5F9'" onmouseleave="this.style.background='transparent'">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(0,82,255,.08);">
+                    <svg class="w-4 h-4" style="color:#0052FF;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                </div>
+                <span class="text-sm font-medium">Ajouter un membre</span>
+                <svg class="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style="color:#94A3B8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
-            <a href="{% url 'cycles:create' %}" class="flex items-center gap-3 px-3 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors cursor-pointer">
-                <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                Créer un cycle
+            <a href="{% url 'cycles:create' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all cursor-pointer group" style="color:#374151;" onmouseenter="this.style.background='#F1F5F9'" onmouseleave="this.style.background='transparent'">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(124,58,237,.08);">
+                    <svg class="w-4 h-4" style="color:#7C3AED;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                </div>
+                <span class="text-sm font-medium">Créer un cycle</span>
+                <svg class="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style="color:#94A3B8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
-            <a href="{% url 'contributions:list' %}" class="flex items-center gap-3 px-3 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors cursor-pointer">
-                <svg class="w-4 h-4 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Valider contributions
+            <a href="{% url 'contributions:list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all cursor-pointer group" style="color:#374151;" onmouseenter="this.style.background='#F1F5F9'" onmouseleave="this.style.background='transparent'">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(5,150,105,.08);">
+                    <svg class="w-4 h-4" style="color:#059669;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <span class="text-sm font-medium">Valider contributions</span>
+                <svg class="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style="color:#94A3B8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
-            <a href="{% url 'emergencies:list' %}" class="flex items-center gap-3 px-3 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors cursor-pointer">
-                <svg class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                Traiter urgences
+            <a href="{% url 'emergencies:list' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all cursor-pointer group" style="color:#374151;" onmouseenter="this.style.background='#FEF2F2'" onmouseleave="this.style.background='transparent'">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(220,38,38,.08);">
+                    <svg class="w-4 h-4" style="color:#DC2626;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <span class="text-sm font-medium">Traiter urgences</span>
+                {% if pending_emergencies > 0 %}<span class="ml-auto text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold" style="background:#DC2626;">{{ pending_emergencies }}</span>{% endif %}
             </a>
-            <a href="{% url 'reports:index' %}" class="flex items-center gap-3 px-3 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors cursor-pointer">
-                <svg class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Générer rapports
+            <a href="{% url 'reports:index' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all cursor-pointer group" style="color:#374151;" onmouseenter="this.style.background='#F1F5F9'" onmouseleave="this.style.background='transparent'">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(245,158,11,.08);">
+                    <svg class="w-4 h-4" style="color:#D97706;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <span class="text-sm font-medium">Générer rapports</span>
+                <svg class="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style="color:#94A3B8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
+            {% endwith %}
         </div>
     </div>
 </div>
 
-<!-- Derniers membres -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800">
-        <h2 class="font-semibold text-slate-100">Derniers membres inscrits</h2>
-        <a href="{% url 'members:list' %}" class="text-xs text-green-400 hover:text-green-300 transition-colors">Voir tous →</a>
+<!-- ── Derniers membres ── -->
+<div class="form-card p-0 overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid #E2E8F0;">
+        <div>
+            <h2 class="font-semibold" style="color:#0F172A;">Derniers membres inscrits</h2>
+            <p class="text-xs mt-0.5" style="color:#64748B;">{{ recent_members|length }} membre{{ recent_members|length|pluralize }} récent{{ recent_members|length|pluralize }}</p>
+        </div>
+        <a href="{% url 'members:list' %}" class="btn-secondary text-xs">
+            Voir tous
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
     </div>
-    <table class="w-full data-table">
-        <thead>
-            <tr>
-                <th>Membre</th>
-                <th>Têtes</th>
-                <th>Statut</th>
-                <th>Inscrit le</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for member in recent_members %}
-            <tr>
-                <td>
-                    <div>
-                        <p class="font-medium text-slate-200">{{ member.full_name }}</p>
-                        <p class="text-xs text-slate-500">{{ member.user.email }}</p>
-                    </div>
-                </td>
-                <td>
-                    <span class="text-slate-300">{{ member.head_count }} tête{{ member.head_count|pluralize }}</span>
-                </td>
-                <td>
-                    <span class="badge-{{ member.status }}">{{ member.get_status_display }}</span>
-                </td>
-                <td class="text-slate-400">{{ member.joined_at|date:"d/m/Y" }}</td>
-                <td>
-                    <a href="{% url 'members:detail' member.pk %}" class="text-green-400 hover:text-green-300 text-xs transition-colors">Voir →</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="5" class="text-center text-slate-500 py-8">Aucun membre enregistré.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="overflow-x-auto">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th class="pl-6">Membre</th>
+                    <th>Têtes</th>
+                    <th>Statut</th>
+                    <th>Inscrit le</th>
+                    <th class="pr-6"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in recent_members %}
+                <tr>
+                    <td class="pl-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold"
+                                 style="background:rgba(0,82,255,.08);color:#0052FF;">
+                                {{ member.full_name|first|upper }}
+                            </div>
+                            <div>
+                                <p class="font-semibold text-sm" style="color:#0F172A;">{{ member.full_name }}</p>
+                                <p class="text-xs" style="color:#94A3B8;">{{ member.user.email }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="font-mono-ui text-sm font-medium" style="color:#374151;">{{ member.head_count }}</span>
+                        <span class="text-xs" style="color:#94A3B8;"> tête{{ member.head_count|pluralize }}</span>
+                    </td>
+                    <td><span class="badge-{{ member.status }}">{{ member.get_status_display }}</span></td>
+                    <td class="font-mono-ui text-xs" style="color:#94A3B8;">{{ member.joined_at|date:"d/m/Y" }}</td>
+                    <td class="pr-6">
+                        <a href="{% url 'members:detail' member.pk %}" class="btn-secondary text-xs">Voir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-12" style="color:#94A3B8;">
+                        <div class="flex flex-col items-center gap-2">
+                            <svg class="w-8 h-8" style="color:#CBD5E1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Aucun membre enregistré
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
