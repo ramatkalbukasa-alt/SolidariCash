@@ -75,7 +75,9 @@ WSGI_APPLICATION = 'solidaricash.wsgi.application'
 
 _DATABASE_URL = config('DATABASE_URL', default=None)
 if _DATABASE_URL:
-    DATABASES = {'default': dj_database_url.parse(_DATABASE_URL, conn_max_age=600)}
+    _db = dj_database_url.parse(_DATABASE_URL, conn_max_age=600, ssl_require=True)
+    _db['CONN_HEALTH_CHECKS'] = True
+    DATABASES = {'default': _db}
 else:
     DATABASES = {
         'default': {
