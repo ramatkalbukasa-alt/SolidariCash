@@ -6,23 +6,23 @@
 <div class="max-w-lg">
     <div class="form-card">
         <div class="flex items-center justify-between mb-5">
-            <h2 class="font-semibold text-slate-100">Contribution</h2>
+            <div class="section-label">Contribution</div>
             <span class="badge-{{ contribution.status }}">{{ contribution.get_status_display }}</span>
         </div>
         <div class="space-y-3">
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Membre</span><span class="text-slate-200 font-medium">{{ contribution.head.member.full_name }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Tête</span><span class="text-slate-200">{{ contribution.head.display_name }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Cycle</span><span class="text-slate-200">{{ contribution.cycle.name }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Montant dû</span><span class="text-slate-200">{{ contribution.amount_due }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Montant payé</span><span class="text-green-400 font-bold">{{ contribution.amount_paid }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Mode de paiement</span><span class="text-slate-200">{{ contribution.get_payment_method_display|default:"—" }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Référence</span><span class="text-slate-200">{{ contribution.payment_reference|default:"—" }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Soumis le</span><span class="text-slate-200">{{ contribution.submitted_at|date:"d/m/Y H:i"|default:"—" }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Validé par</span><span class="text-slate-200">{{ contribution.validated_by|default:"—" }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Validé le</span><span class="text-slate-200">{{ contribution.validated_at|date:"d/m/Y H:i"|default:"—" }}</span></div>
-            {% if contribution.admin_notes %}<div class="pt-3 border-t border-slate-800"><p class="text-xs text-slate-500">Notes admin : {{ contribution.admin_notes }}</p></div>{% endif %}
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Membre</span><span class="font-medium" style="color:#374151;">{{ contribution.head.member.full_name }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Tête</span><span style="color:#374151;">{{ contribution.head.display_name }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Cycle</span><span class="font-mono-ui" style="color:#374151;">{{ contribution.cycle.name }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Montant dû</span><span style="color:#374151;">{{ contribution.amount_due }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Montant payé</span><span class="font-bold" style="color:#059669;">{{ contribution.amount_paid }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Mode de paiement</span><span style="color:#374151;">{{ contribution.get_payment_method_display|default:"—" }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Référence</span><span class="font-mono-ui" style="color:#374151;">{{ contribution.payment_reference|default:"—" }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Soumis le</span><span class="font-mono-ui" style="color:#374151;">{{ contribution.submitted_at|date:"d/m/Y H:i"|default:"—" }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Validé par</span><span style="color:#374151;">{{ contribution.validated_by|default:"—" }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Validé le</span><span class="font-mono-ui" style="color:#374151;">{{ contribution.validated_at|date:"d/m/Y H:i"|default:"—" }}</span></div>
+            {% if contribution.admin_notes %}<div class="pt-3" style="border-top:1px solid #E2E8F0;"><p class="text-xs" style="color:#64748B;">Notes admin : {{ contribution.admin_notes }}</p></div>{% endif %}
             {% if contribution.payment_proof %}
-            <div class="pt-3 border-t border-slate-800">
+            <div class="pt-3" style="border-top:1px solid #E2E8F0;">
                 <a href="{{ contribution.payment_proof.url }}" target="_blank" class="btn-secondary text-xs">Voir la preuve de paiement</a>
             </div>
             {% endif %}

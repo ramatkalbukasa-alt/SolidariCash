@@ -9,11 +9,11 @@
 
 <div class="space-y-3">
     {% for cycle in cycles %}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+    <div class="form-card p-5">
         <div class="flex items-center justify-between">
             <div>
-                <p class="font-semibold text-slate-100">{{ cycle.name }}</p>
-                <p class="text-xs text-slate-500 mt-0.5">
+                <p class="font-semibold" style="color:#0F172A;">{{ cycle.name }}</p>
+                <p class="text-xs font-mono-ui mt-0.5" style="color:#94A3B8;">
                     {{ cycle.start_date|date:"d/m/Y" }} — {{ cycle.end_date|date:"d/m/Y" }} ·
                     <span class="badge-{{ cycle.status }} ml-1">{{ cycle.get_status_display }}</span>
                 </p>
@@ -30,24 +30,24 @@
                 <a href="{% url 'cycles:detail' cycle.pk %}" class="btn-secondary text-xs">Voir cycle →</a>
             </div>
         </div>
-        <div class="mt-3 pt-3 border-t border-slate-800 grid grid-cols-3 gap-4 text-center">
+        <div class="mt-3 pt-3 grid grid-cols-3 gap-4 text-center" style="border-top:1px solid #E2E8F0;">
             <div>
-                <p class="text-lg font-bold text-green-400">{{ cycle.total_collected }}</p>
-                <p class="text-xs text-slate-500">Total collecté</p>
+                <p class="text-lg font-bold" style="color:#059669;">{{ cycle.total_collected }}</p>
+                <p class="text-xs font-mono-ui uppercase tracking-widest" style="color:#94A3B8;">Total collecté</p>
             </div>
             <div>
-                <p class="text-lg font-bold text-yellow-400">{{ cycle.commission_amount }}</p>
-                <p class="text-xs text-slate-500">Commission</p>
+                <p class="text-lg font-bold" style="color:#D97706;">{{ cycle.commission_amount }}</p>
+                <p class="text-xs font-mono-ui uppercase tracking-widest" style="color:#94A3B8;">Commission</p>
             </div>
             <div>
-                <p class="text-lg font-bold text-blue-400">{{ cycle.distributable_amount }}</p>
-                <p class="text-xs text-slate-500">Distribuable</p>
+                <p class="text-lg font-bold gradient-text">{{ cycle.distributable_amount }}</p>
+                <p class="text-xs font-mono-ui uppercase tracking-widest" style="color:#94A3B8;">Distribuable</p>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-        <p class="text-slate-500">Aucun cycle disponible pour générer des rapports.</p>
+    <div class="form-card p-12 text-center">
+        <p style="color:#94A3B8;">Aucun cycle disponible pour générer des rapports.</p>
         <a href="{% url 'cycles:create' %}" class="btn-primary mt-4 inline-flex">Créer un cycle</a>
     </div>
     {% endfor %}

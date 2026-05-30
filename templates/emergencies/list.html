@@ -14,9 +14,9 @@
 </div>
 
 {% if user.is_admin %}
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+<div class="form-card mb-4">
     <form method="get" class="flex gap-3">
-        <select name="status" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+        <select name="status" class="rounded-lg px-3 py-2 text-sm cursor-pointer" style="border:1px solid #E2E8F0;color:#0F172A;">
             <option value="">Tous les statuts</option>
             {% for v, l in status_choices %}<option value="{{ v }}" {% if status_filter == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
         </select>
@@ -27,21 +27,21 @@
 
 <div class="space-y-3">
     {% for e in emergencies %}
-    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition-colors">
+    <div class="form-card p-5 transition-shadow hover:shadow-md">
         <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="badge-{{ e.status }}">{{ e.get_status_display }}</span>
-                    <span class="text-xs text-slate-500">{{ e.cycle.name }}</span>
-                    {% if e.is_emergency %}<span class="text-xs text-orange-400">⚡ Urgence</span>{% endif %}
+                    <span class="text-xs font-mono-ui" style="color:#94A3B8;">{{ e.cycle.name }}</span>
+                    {% if e.is_emergency %}<span class="text-xs" style="color:#F59E0B;">&#9889; Urgence</span>{% endif %}
                 </div>
                 {% if user.is_admin %}
-                <p class="font-medium text-slate-200 mb-1">{{ e.member.full_name }}</p>
+                <p class="font-medium mb-1" style="color:#0F172A;">{{ e.member.full_name }}</p>
                 {% endif %}
-                <p class="text-sm text-slate-400">{{ e.reason|truncatechars:120 }}</p>
-                <p class="text-xs text-slate-600 mt-2">Soumis le {{ e.requested_at|date:"d/m/Y à H:i" }}</p>
+                <p class="text-sm" style="color:#64748B;">{{ e.reason|truncatechars:120 }}</p>
+                <p class="text-xs mt-2 font-mono-ui" style="color:#94A3B8;">Soumis le {{ e.requested_at|date:"d/m/Y à H:i" }}</p>
                 {% if e.decided_at %}
-                <p class="text-xs text-slate-600">Décidé le {{ e.decided_at|date:"d/m/Y" }} par {{ e.decided_by }}</p>
+                <p class="text-xs font-mono-ui" style="color:#94A3B8;">Décidé le {{ e.decided_at|date:"d/m/Y" }} par {{ e.decided_by }}</p>
                 {% endif %}
             </div>
             <div>
@@ -56,11 +56,11 @@
         </div>
     </div>
     {% empty %}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-        <div class="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    <div class="form-card p-12 text-center">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:#F1F5F9;">
+            <svg class="w-6 h-6" style="color:#CBD5E1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
-        <p class="text-slate-500">Aucune demande d'urgence</p>
+        <p style="color:#94A3B8;">Aucune demande d'urgence</p>
     </div>
     {% endfor %}
 </div>

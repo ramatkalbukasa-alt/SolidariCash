@@ -13,7 +13,7 @@
     {% endif %}
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="form-card p-0 overflow-hidden">
     <table class="w-full data-table">
         <thead>
             <tr>
@@ -25,24 +25,24 @@
         <tbody>
             {% for d in distributions %}
             <tr>
-                {% if user.is_admin %}<td class="text-slate-300">{{ d.head.member.full_name }}</td>{% endif %}
-                <td class="text-slate-400 text-xs">Tête #{{ d.head.head_number }}</td>
-                <td class="text-slate-400 text-xs">{{ d.cycle.name }}</td>
-                <td class="text-slate-300">{{ d.gross_amount }}</td>
-                <td class="text-yellow-400 text-xs">{{ d.commission_amount }}</td>
-                <td class="text-green-400 font-bold">{{ d.net_amount }}</td>
+                {% if user.is_admin %}<td style="color:#374151;">{{ d.head.member.full_name }}</td>{% endif %}
+                <td class="text-xs font-mono-ui" style="color:#94A3B8;">Tête #{{ d.head.head_number }}</td>
+                <td class="text-xs font-mono-ui" style="color:#94A3B8;">{{ d.cycle.name }}</td>
+                <td style="color:#374151;">{{ d.gross_amount }}</td>
+                <td class="text-xs" style="color:#D97706;">{{ d.commission_amount }}</td>
+                <td class="font-bold" style="color:#059669;">{{ d.net_amount }}</td>
                 <td><span class="badge-{{ d.status }}">{{ d.get_status_display }}</span></td>
-                <td class="text-slate-500 text-xs">{{ d.processed_at|date:"d/m/Y"|default:"—" }}</td>
+                <td class="text-xs font-mono-ui" style="color:#94A3B8;">{{ d.processed_at|date:"d/m/Y"|default:"—" }}</td>
                 {% if not user.is_admin %}
                 <td>
                     {% if d.status == 'completed' %}
-                    <a href="{% url 'reports:receipt_pdf' d.pk %}" class="text-xs text-green-400 hover:text-green-300">PDF →</a>
+                    <a href="{% url 'reports:receipt_pdf' d.pk %}" class="text-xs font-medium" style="color:#0052FF;">PDF →</a>
                     {% endif %}
                 </td>
                 {% endif %}
             </tr>
             {% empty %}
-            <tr><td colspan="9" class="text-center text-slate-500 py-8">Aucune distribution effectuée.</td></tr>
+            <tr><td colspan="9" class="text-center py-8" style="color:#94A3B8;">Aucune distribution effectuée.</td></tr>
             {% endfor %}
         </tbody>
     </table>

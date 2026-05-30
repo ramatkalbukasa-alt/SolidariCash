@@ -321,3 +321,95 @@ def my_profile(request):
         messages.error(request, "Profil membre introuvable.")
         return redirect('members:dashboard')
     return redirect('members:detail', pk=member.pk)
+
+
+@admin_required
+def analytics(request):
+    import json
+    from apps.cycles.models import Cycle
+    from apps.contributions.models import Contribution
+    from apps.distributions.models import Distribution
+
+    # --- KPIs ---
+    total_members = Member.objects.count()
+    active_members = Member.objects.filter(status=Member.STATUS_ACTIVE).count()
+    total_heads = Head.objects.filter(is_active=True).count()
+    total_cycles = Cycle.objects.count()
+    active_cycle = Cycle.objects.filter(
+        status__in=[Cycle.STATUS_OPEN, Cycle.STATUS_DISTRIBUTION]
+    ).first()
+
+    total_collected = Contribution.objects.filter(
+        status=Contribution.STATUS_PAID
+    ).aggregate(s=Sum('amount_paid'))['s'] or 0
+
+    total_distributed = Distribution.objects.filter(
+        status=Distribution.STATUS_COMPLETED
+    ).aggregate(s=Sum('net_amount'))['s'] or 0
+
+    # --- Membres par statut (pie) ---
+    suspended = Member.objects.filter(status=Member.STATUS_SUSPENDED).count()
+    member_status_data = {
+        'labels': ['Actifs', 'Suspendus'],
+        'values': [active_members, suspended],
+        'colors': ['#0052FF', '#F59E0B'],
+    }
+
+    # --- Contributions par statut (donut) ---
+    paid_count = Contribution.objects.filter(status=Contribution.STATUS_PAID).count()
+    pending_count = Contribution.objects.filter(status=Contribution.STATUS_PENDING).count()
+    late_count = Contribution.objects.filter(status=Contribution.STATUS_LATE).count()
+    contrib_status_data = {
+        'labels': ['Payées', 'En attente', 'En retard'],
+        'values': [paid_count, pending_count, late_count],
+        'colors': ['#059669', '#0052FF', '#EF4444'],
+    }
+
+    # --- Collecte par cycle (bar) ---
+    cycles_qs = Cycle.objects.order_by('start_date')
+    cycle_labels = list(cycles_qs.values_list('name', flat=True))
+    cycle_collected = []
+    cycle_distributed = []
+    for c in cycles_qs:
+        collected = Contribution.objects.filter(
+            cycle=c, status=Contribution.STATUS_PAID
+        ).aggregate(s=Sum('amount_paid'))['s'] or 0
+        distributed = Distribution.objects.filter(
+            cycle=c, status=Distribution.STATUS_COMPLETED
+        ).aggregate(s=Sum('net_amount'))['s'] or 0
+        cycle_collected.append(float(collected))
+        cycle_distributed.append(float(distributed))
+
+    cycle_chart_data = {
+        'labels': cycle_labels,
+        'collected': cycle_collected,
+        'distributed': cycle_distributed,
+    }
+
+    # --- Membres rejoints par mois (line) ---
+    from django.db.models.functions import TruncMonth
+    monthly_members = (
+        Member.objects.annotate(month=TruncMonth('joined_at'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')[:12]
+    )
+    growth_labels = [m['month'].strftime('%b %Y') for m in monthly_members if m['month']]
+    growth_values = [m['count'] for m in monthly_members if m['month']]
+
+    growth_data = {'labels': growth_labels, 'values': growth_values}
+
+    context = {
+        'total_members': total_members,
+        'active_members': active_members,
+        'total_heads': total_heads,
+        'total_cycles': total_cycles,
+        'active_cycle': active_cycle,
+        'total_collected': total_collected,
+        'total_distributed': total_distributed,
+        'member_status_json': json.dumps(member_status_data),
+        'contrib_status_json': json.dumps(contrib_status_data),
+        'cycle_chart_json': json.dumps(cycle_chart_data),
+        'growth_json': json.dumps(growth_data),
+    }
+    return render(request, 'analytics/dashboard.html', context)

@@ -6,11 +6,11 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Rotation</h1>
-        {% if selected_cycle %}<p class="text-sm text-slate-500 mt-0.5">{{ selected_cycle.name }}</p>{% endif %}
+        {% if selected_cycle %}<p class="text-sm font-mono-ui mt-0.5" style="color:#94A3B8;">{{ selected_cycle.name }}</p>{% endif %}
     </div>
     <div class="flex gap-2">
         <a href="{% url 'rotation:history' %}" class="btn-secondary">Historique</a>
-        {% if user.is_admin and selected_cycle and selected_cycle.status == 'pending' or selected_cycle.status == 'open' %}
+        {% if user.is_admin and selected_cycle and selected_cycle.status == 'pending' or user.is_admin and selected_cycle and selected_cycle.status == 'open' %}
         <form method="post" action="{% url 'cycles:generate_rotation' selected_cycle.pk %}">
             {% csrf_token %}
             <button type="submit" class="btn-primary">Régénérer</button>
@@ -20,9 +20,9 @@
 </div>
 
 <!-- Filtre cycle -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+<div class="form-card mb-4">
     <form method="get" class="flex gap-3">
-        <select name="cycle" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer flex-1">
+        <select name="cycle" class="rounded-lg px-3 py-2 text-sm cursor-pointer flex-1" style="border:1px solid #E2E8F0;color:#0F172A;">
             <option value="">— Sélectionner un cycle —</option>
             {% for c in cycles %}
             <option value="{{ c.pk }}" {% if selected_cycle and selected_cycle.pk == c.pk %}selected{% endif %}>{{ c.name }}</option>
@@ -33,14 +33,14 @@
 </div>
 
 {% if not user.is_admin and my_positions %}
-<div class="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4 mb-4">
-    <p class="text-sm font-medium text-blue-300 mb-2">Mes positions dans ce cycle :</p>
+<div class="rounded-xl p-4 mb-4" style="background:#EFF6FF;border:1px solid #BFDBFE;">
+    <p class="text-sm font-medium mb-2" style="color:#1E40AF;">Mes positions dans ce cycle :</p>
     <div class="flex flex-wrap gap-2">
         {% for ro in my_positions %}
-        <div class="flex items-center gap-2 bg-slate-800/60 rounded-lg px-3 py-2">
-            <span class="text-xl font-bold text-blue-400">#{{ ro.position }}</span>
+        <div class="flex items-center gap-2 rounded-xl px-3 py-2" style="background:#fff;border:1px solid #BFDBFE;">
+            <span class="text-xl font-bold" style="color:#0052FF;">#{{ ro.position }}</span>
             <div>
-                <p class="text-xs text-slate-300">{{ ro.head.display_name }}</p>
+                <p class="text-xs font-medium" style="color:#374151;">{{ ro.head.display_name }}</p>
                 <span class="badge-{{ ro.status }} text-[10px]">{{ ro.get_status_display }}</span>
             </div>
         </div>
@@ -50,7 +50,7 @@
 {% endif %}
 
 {% if rotation_orders %}
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="form-card p-0 overflow-hidden">
     <table class="w-full data-table">
         <thead>
             <tr><th class="w-16">Pos.</th><th>Membre</th><th>Tête</th><th>Statut</th><th>Urgence</th>
@@ -59,25 +59,25 @@
         </thead>
         <tbody>
             {% for ro in rotation_orders %}
-            <tr class="{% if not user.is_admin and ro.head.member.user == user %}bg-blue-900/10{% endif %}">
+            <tr class="{% if not user.is_admin and ro.head.member.user == user %}bg-blue-50{% endif %}">
                 <td>
-                    <div class="w-8 h-8 {% if ro.status == 'served' %}bg-green-900/40{% elif ro.is_emergency %}bg-orange-900/40{% else %}bg-slate-800{% endif %} rounded-lg flex items-center justify-center text-sm font-bold {% if ro.status == 'served' %}text-green-400{% elif ro.is_emergency %}text-orange-400{% else %}text-slate-200{% endif %}">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold {% if ro.status == 'served' %}pos-served{% elif ro.is_emergency %}pos-emergency{% else %}pos-default{% endif %}">
                         {{ ro.position }}
                     </div>
                 </td>
                 <td>
-                    <p class="text-slate-200 font-medium">{{ ro.head.member.full_name }}</p>
-                    {% if not user.is_admin and ro.head.member.user == user %}<span class="text-xs text-blue-400">← Moi</span>{% endif %}
+                    <p class="font-medium" style="color:#0F172A;">{{ ro.head.member.full_name }}</p>
+                    {% if not user.is_admin and ro.head.member.user == user %}<span class="text-xs" style="color:#0052FF;">← Moi</span>{% endif %}
                 </td>
-                <td class="text-slate-400 text-xs">Tête #{{ ro.head.head_number }}</td>
+                <td class="text-xs font-mono-ui" style="color:#94A3B8;">Tête #{{ ro.head.head_number }}</td>
                 <td><span class="badge-{{ ro.status }}">{{ ro.get_status_display }}</span></td>
-                <td class="text-xs {% if ro.is_emergency %}text-orange-400{% else %}text-slate-600{% endif %}">
-                    {% if ro.is_emergency %}⚡ Urgence{% else %}—{% endif %}
+                <td class="text-xs">
+                    {% if ro.is_emergency %}<span style="color:#F59E0B;">&#9889; Urgence</span>{% else %}<span style="color:#94A3B8;">—</span>{% endif %}
                 </td>
                 {% if user.is_admin %}
                 <td>
                     {% if ro.status == 'pending' %}
-                    <a href="{% url 'distributions:process' ro.pk %}" class="text-xs text-green-400 hover:text-green-300 cursor-pointer">Distribuer →</a>
+                    <a href="{% url 'distributions:process' ro.pk %}" class="text-xs font-medium" style="color:#0052FF;">Distribuer →</a>
                     {% endif %}
                 </td>
                 {% endif %}
@@ -87,8 +87,8 @@
     </table>
 </div>
 {% elif selected_cycle %}
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-    <p class="text-slate-500 mb-4">Aucune rotation générée pour ce cycle.</p>
+<div class="form-card p-12 text-center">
+    <p class="mb-4" style="color:#94A3B8;">Aucune rotation générée pour ce cycle.</p>
     {% if user.is_admin %}
     <form method="post" action="{% url 'cycles:generate_rotation' selected_cycle.pk %}">{% csrf_token %}
         <button type="submit" class="btn-primary">Générer la rotation</button>
@@ -96,8 +96,8 @@
     {% endif %}
 </div>
 {% else %}
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-    <p class="text-slate-500">Sélectionnez un cycle pour voir la rotation.</p>
+<div class="form-card p-12 text-center">
+    <p style="color:#94A3B8;">Sélectionnez un cycle pour voir la rotation.</p>
 </div>
 {% endif %}
 {% endblock %}

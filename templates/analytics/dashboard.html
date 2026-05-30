@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% block title %}Analytics — SolidariCash{% endblock %}
+{% block page_header %}Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="section-label mb-2">
+            <span class="w-1.5 h-1.5 rounded-full anim-pulse" style="background:#0052FF;display:inline-block;"></span>
+            Vue d'ensemble
+        </div>
+        <h1 class="page-title">Analytics</h1>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="stat-card anim-fade-up">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center icon-bg-blue">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Membres</span>
+        </div>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ total_members }}</p>
+        <p class="text-xs" style="color:#64748B;">{{ active_members }} actifs</p>
+    </div>
+    <div class="stat-card anim-fade-up delay-1">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center icon-bg-purple">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Têtes</span>
+        </div>
+        <p class="text-3xl font-bold mb-1" style="color:#0F172A;">{{ total_heads }}</p>
+        <p class="text-xs" style="color:#64748B;">têtes actives</p>
+    </div>
+    <div class="stat-card anim-fade-up delay-2">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center icon-bg-green">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Collecté</span>
+        </div>
+        <p class="text-2xl font-bold mb-1" style="color:#0F172A;">{{ total_collected|floatformat:0 }}</p>
+        <p class="text-xs" style="color:#64748B;">contributions payées</p>
+    </div>
+    <div class="stat-card anim-fade-up delay-3">
+        <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center icon-bg-amber">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            <span class="font-mono-ui text-[10px] uppercase tracking-widest" style="color:#94A3B8;">Distribué</span>
+        </div>
+        <p class="text-2xl font-bold mb-1" style="color:#0F172A;">{{ total_distributed|floatformat:0 }}</p>
+        <p class="text-xs" style="color:#64748B;">{{ total_cycles }} cycle{{ total_cycles|pluralize }}</p>
+    </div>
+</div>
+
+<!-- Charts row 1 -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
+
+    <!-- Collecte par cycle (bar) — span 2 -->
+    <div class="lg:col-span-2 form-card">
+        <div class="section-label mb-4">Collecte vs Distribution par cycle</div>
+        <div style="height:260px;position:relative;">
+            <canvas id="cycleChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Membres par statut (doughnut) -->
+    <div class="form-card flex flex-col">
+        <div class="section-label mb-4">Statut des membres</div>
+        <div class="flex-1 flex items-center justify-center" style="height:220px;position:relative;">
+            <canvas id="memberStatusChart"></canvas>
+        </div>
+        <div id="memberLegend" class="flex flex-wrap gap-3 justify-center mt-4"></div>
+    </div>
+</div>
+
+<!-- Charts row 2 -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Croissance membres (line) — span 2 -->
+    <div class="lg:col-span-2 form-card">
+        <div class="section-label mb-4">Croissance des membres (12 mois)</div>
+        <div style="height:220px;position:relative;">
+            <canvas id="growthChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Contributions par statut (doughnut) -->
+    <div class="form-card flex flex-col">
+        <div class="section-label mb-4">Statut des contributions</div>
+        <div class="flex-1 flex items-center justify-center" style="height:180px;position:relative;">
+            <canvas id="contribChart"></canvas>
+        </div>
+        <div id="contribLegend" class="flex flex-wrap gap-3 justify-center mt-4"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const memberStatusData  = {{ member_status_json|safe }};
+const contribStatusData = {{ contrib_status_json|safe }};
+const cycleData         = {{ cycle_chart_json|safe }};
+const growthData        = {{ growth_json|safe }};
+
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = '#64748B';
+
+// ── Collecte par cycle (grouped bar) ─────────────────────────────────────────
+new Chart(document.getElementById('cycleChart'), {
+    type: 'bar',
+    data: {
+        labels: cycleData.labels.length ? cycleData.labels : ['Aucun cycle'],
+        datasets: [
+            {
+                label: 'Collecté',
+                data: cycleData.collected.length ? cycleData.collected : [0],
+                backgroundColor: 'rgba(0,82,255,0.85)',
+                borderRadius: 6,
+                borderSkipped: false,
+            },
+            {
+                label: 'Distribué',
+                data: cycleData.distributed.length ? cycleData.distributed : [0],
+                backgroundColor: 'rgba(5,150,105,0.75)',
+                borderRadius: 6,
+                borderSkipped: false,
+            }
+        ]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', align: 'end' } },
+        scales: {
+            x: { grid: { display: false }, border: { display: false } },
+            y: { grid: { color: '#F1F5F9' }, border: { display: false }, ticks: { maxTicksLimit: 5 } }
+        }
+    }
+});
+
+// ── Statut membres (doughnut) ─────────────────────────────────────────────────
+new Chart(document.getElementById('memberStatusChart'), {
+    type: 'doughnut',
+    data: {
+        labels: memberStatusData.labels,
+        datasets: [{ data: memberStatusData.values, backgroundColor: memberStatusData.colors, borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, cutout: '72%',
+        plugins: { legend: { display: false } }
+    }
+});
+buildLegend('memberLegend', memberStatusData);
+
+// ── Croissance membres (line) ─────────────────────────────────────────────────
+new Chart(document.getElementById('growthChart'), {
+    type: 'line',
+    data: {
+        labels: growthData.labels.length ? growthData.labels : ['—'],
+        datasets: [{
+            label: 'Nouveaux membres',
+            data: growthData.values.length ? growthData.values : [0],
+            borderColor: '#0052FF',
+            backgroundColor: 'rgba(0,82,255,0.06)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#0052FF',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { grid: { display: false }, border: { display: false } },
+            y: { grid: { color: '#F1F5F9' }, border: { display: false }, ticks: { stepSize: 1, maxTicksLimit: 5 } }
+        }
+    }
+});
+
+// ── Contributions par statut (doughnut) ──────────────────────────────────────
+new Chart(document.getElementById('contribChart'), {
+    type: 'doughnut',
+    data: {
+        labels: contribStatusData.labels,
+        datasets: [{ data: contribStatusData.values, backgroundColor: contribStatusData.colors, borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, cutout: '72%',
+        plugins: { legend: { display: false } }
+    }
+});
+buildLegend('contribLegend', contribStatusData);
+
+function buildLegend(containerId, data) {
+    const el = document.getElementById(containerId);
+    data.labels.forEach((label, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'flex items-center gap-1.5 text-xs';
+        dot.style.color = '#64748B';
+        dot.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${data.colors[i]};display:inline-block;flex-shrink:0;"></span>${label} <strong style="color:#0F172A;">${data.values[i]}</strong>`;
+        el.appendChild(dot);
+    });
+}
+</script>
+{% endblock %}

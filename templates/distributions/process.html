@@ -6,39 +6,39 @@
 <div class="max-w-lg">
     <div class="form-card mb-4 border-green-800/30">
         <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#DCFCE7;">
+                <svg class="w-5 h-5" style="color:#059669;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div>
-                <h2 class="font-semibold text-slate-100">Distribution #{{ rotation_order.position }}</h2>
-                <p class="text-sm text-slate-500">{{ cycle.name }}</p>
+                <h2 class="font-semibold" style="color:#0F172A;">Distribution #{{ rotation_order.position }}</h2>
+                <p class="text-sm font-mono-ui" style="color:#94A3B8;">{{ cycle.name }}</p>
             </div>
         </div>
         <div class="space-y-2">
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Bénéficiaire</span><span class="text-slate-200 font-semibold">{{ head.member.full_name }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Tête</span><span class="text-slate-200">{{ head.display_name }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Position rotation</span><span class="text-blue-400 font-bold">#{{ rotation_order.position }}</span></div>
-            <div class="pt-3 border-t border-slate-800 space-y-2">
-                <div class="flex justify-between text-sm"><span class="text-slate-500">Montant brut collecté</span><span class="text-slate-200">{{ gross }}</span></div>
-                <div class="flex justify-between text-sm"><span class="text-slate-500">Commission ({{ cycle.commission_rate|floatformat:1 }}%)</span><span class="text-yellow-400">- {{ commission }}</span></div>
-                <div class="flex justify-between text-sm font-semibold border-t border-slate-800 pt-2">
-                    <span class="text-slate-300">Montant net à distribuer</span>
-                    <span class="text-green-400 text-lg">{{ net }}</span>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Bénéficiaire</span><span class="font-semibold" style="color:#0F172A;">{{ head.member.full_name }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Tête</span><span style="color:#374151;">{{ head.display_name }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Position rotation</span><span class="font-bold" style="color:#0052FF;">#{{ rotation_order.position }}</span></div>
+            <div class="pt-3 space-y-2" style="border-top:1px solid #E2E8F0;">
+                <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Montant brut collecté</span><span style="color:#374151;">{{ gross }}</span></div>
+                <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Commission ({{ cycle.commission_rate|floatformat:1 }}%)</span><span style="color:#D97706;">- {{ commission }}</span></div>
+                <div class="flex justify-between text-sm font-semibold pt-2" style="border-top:1px solid #E2E8F0;">
+                    <span style="color:#374151;">Montant net à distribuer</span>
+                    <span class="text-lg" style="color:#059669;">{{ net }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-yellow-900/20 border border-yellow-800/30 rounded-xl p-4 mb-4">
-        <p class="text-sm text-yellow-300">⚠ Cette action est irréversible. Vérifiez les informations avant de confirmer.</p>
+    <div class="rounded-xl p-4 mb-4" style="background:#FFFBEB;border:1px solid #FDE68A;">
+        <p class="text-sm" style="color:#92400E;">⚠️ Cette action est irréversible. Vérifiez les informations avant de confirmer.</p>
     </div>
 
     <form method="post" class="form-card">
         {% csrf_token %}
         <div class="mb-4">
-            <label class="block text-sm font-medium text-slate-400 mb-2">Notes (optionnel)</label>
+            <label class="block text-sm font-medium mb-2" style="color:#374151;">Notes (optionnel)</label>
             <textarea name="notes" rows="3" placeholder="Notes sur cette distribution..."
-                class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none text-sm"></textarea>
+                class="resize-none"></textarea>
         </div>
         <div class="flex gap-3">
             <button type="submit" class="btn-primary" onclick="return confirm('Confirmer la distribution de {{ net }} à {{ head.member.full_name }} ?')">

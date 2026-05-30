@@ -7,15 +7,15 @@
     <h1 class="page-title">Contributions</h1>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-4">
+<div class="form-card mb-4">
     <form method="get" class="flex flex-wrap gap-3">
-        <select name="cycle" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+        <select name="cycle" class="rounded-lg px-3 py-2 text-sm cursor-pointer" style="border:1px solid #E2E8F0;color:#0F172A;">
             <option value="">Tous les cycles</option>
             {% for c in cycles %}
             <option value="{{ c.pk }}" {% if cycle_filter == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
             {% endfor %}
         </select>
-        <select name="status" class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer">
+        <select name="status" class="rounded-lg px-3 py-2 text-sm cursor-pointer" style="border:1px solid #E2E8F0;color:#0F172A;">
             <option value="">Tous les statuts</option>
             {% for value, label in status_choices %}
             <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
@@ -25,7 +25,7 @@
     </form>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+<div class="form-card p-0 overflow-hidden">
     <table class="w-full data-table">
         <thead>
             <tr>
@@ -36,11 +36,11 @@
         <tbody>
             {% for c in contributions %}
             <tr>
-                {% if user.is_admin %}<td class="text-slate-300">{{ c.head.member.full_name }}</td>{% endif %}
-                <td class="text-slate-400 text-xs">Tête #{{ c.head.head_number }}</td>
-                <td class="text-slate-400 text-xs">{{ c.cycle.name }}</td>
-                <td class="text-slate-300">{{ c.amount_due }}</td>
-                <td class="{% if c.is_paid %}text-green-400{% else %}text-slate-400{% endif %}">{{ c.amount_paid }}</td>
+                {% if user.is_admin %}<td style="color:#374151;">{{ c.head.member.full_name }}</td>{% endif %}
+                <td class="font-mono-ui" style="color:#94A3B8;">Tête #{{ c.head.head_number }}</td>
+                <td class="font-mono-ui" style="color:#94A3B8;">{{ c.cycle.name }}</td>
+                <td style="color:#374151;">{{ c.amount_due }}</td>
+                <td class="{% if c.is_paid %}text-success font-bold{% else %}text-muted{% endif %}">{{ c.amount_paid }}</td>
                 <td><span class="badge-{{ c.status }}">{{ c.get_status_display }}</span></td>
                 <td>
                     <div class="flex items-center gap-2">
@@ -55,7 +55,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="7" class="text-center text-slate-500 py-8">Aucune contribution trouvée.</td></tr>
+            <tr><td colspan="7" class="text-center py-8" style="color:#94A3B8;">Aucune contribution trouvée.</td></tr>
             {% endfor %}
         </tbody>
     </table>

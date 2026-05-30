@@ -6,19 +6,19 @@
 <div class="max-w-lg">
     <div class="form-card mb-4">
         <div class="flex items-center justify-between mb-4">
-            <h2 class="font-semibold text-slate-100">Demande d'urgence</h2>
+            <div class="section-label">Demande d'urgence</div>
             <span class="badge-{{ emergency.status }}">{{ emergency.get_status_display }}</span>
         </div>
         <div class="space-y-3">
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Membre</span><span class="text-slate-200 font-medium">{{ emergency.member.full_name }}</span></div>
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Cycle</span><span class="text-slate-200">{{ emergency.cycle.name }}</span></div>
-            {% if emergency.head %}<div class="flex justify-between text-sm"><span class="text-slate-500">Tête concernée</span><span class="text-slate-200">{{ emergency.head.display_name }}</span></div>{% endif %}
-            <div class="flex justify-between text-sm"><span class="text-slate-500">Soumis le</span><span class="text-slate-200">{{ emergency.requested_at|date:"d/m/Y H:i" }}</span></div>
-            {% if emergency.new_position %}<div class="flex justify-between text-sm"><span class="text-slate-500">Nouvelle position</span><span class="text-blue-400 font-bold">#{{ emergency.new_position }}</span></div>{% endif %}
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Membre</span><span class="font-medium" style="color:#374151;">{{ emergency.member.full_name }}</span></div>
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Cycle</span><span class="font-mono-ui" style="color:#374151;">{{ emergency.cycle.name }}</span></div>
+            {% if emergency.head %}<div class="flex justify-between text-sm"><span style="color:#94A3B8;">Tête concernée</span><span style="color:#374151;">{{ emergency.head.display_name }}</span></div>{% endif %}
+            <div class="flex justify-between text-sm"><span style="color:#94A3B8;">Soumis le</span><span class="font-mono-ui" style="color:#374151;">{{ emergency.requested_at|date:"d/m/Y H:i" }}</span></div>
+            {% if emergency.new_position %}<div class="flex justify-between text-sm"><span style="color:#94A3B8;">Nouvelle position</span><span class="font-bold" style="color:#0052FF;">#{{ emergency.new_position }}</span></div>{% endif %}
         </div>
-        <div class="mt-4 pt-4 border-t border-slate-800">
-            <p class="text-xs text-slate-500 mb-2 font-medium">Motif</p>
-            <p class="text-sm text-slate-300">{{ emergency.reason }}</p>
+        <div class="mt-4 pt-4" style="border-top:1px solid #E2E8F0;">
+            <p class="text-xs font-mono-ui uppercase tracking-widest mb-2" style="color:#94A3B8;">Motif</p>
+            <p class="text-sm" style="color:#374151;">{{ emergency.reason }}</p>
         </div>
         {% if emergency.justification_document %}
         <div class="mt-3">
@@ -26,24 +26,24 @@
         </div>
         {% endif %}
         {% if emergency.decision_notes %}
-        <div class="mt-4 pt-4 border-t border-slate-800">
-            <p class="text-xs text-slate-500 mb-2 font-medium">Notes de décision</p>
-            <p class="text-sm text-slate-300">{{ emergency.decision_notes }}</p>
-            {% if emergency.decided_by %}<p class="text-xs text-slate-500 mt-1">Par {{ emergency.decided_by }} le {{ emergency.decided_at|date:"d/m/Y" }}</p>{% endif %}
+        <div class="mt-4 pt-4" style="border-top:1px solid #E2E8F0;">
+            <p class="text-xs font-mono-ui uppercase tracking-widest mb-2" style="color:#94A3B8;">Notes de décision</p>
+            <p class="text-sm" style="color:#374151;">{{ emergency.decision_notes }}</p>
+            {% if emergency.decided_by %}<p class="text-xs font-mono-ui mt-1" style="color:#94A3B8;">Par {{ emergency.decided_by }} le {{ emergency.decided_at|date:"d/m/Y" }}</p>{% endif %}
         </div>
         {% endif %}
     </div>
 
     {% if user.is_admin and emergency.status == 'pending' and not readonly %}
     <div class="form-card">
-        <h2 class="font-semibold text-slate-100 mb-5">Décision</h2>
+        <div class="section-label mb-5">Décision</div>
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {% for field in form %}
             <div>
-                <label class="block text-sm font-medium text-slate-400 mb-2">{{ field.label }}</label>
+                <label class="block text-sm font-medium mb-2" style="color:#374151;">{{ field.label }}</label>
                 {{ field }}
-                {% if field.errors %}<p class="mt-1 text-xs text-red-400">{{ field.errors.0 }}</p>{% endif %}
+                {% if field.errors %}<p class="mt-1 text-xs" style="color:#EF4444;">{{ field.errors.0 }}</p>{% endif %}
             </div>
             {% endfor %}
             <div class="flex gap-3 pt-2">

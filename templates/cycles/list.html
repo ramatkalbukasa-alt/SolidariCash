@@ -12,24 +12,24 @@
 </div>
 
 {% if active_cycle %}
-<div class="bg-green-900/20 border border-green-800/40 rounded-xl p-4 mb-4 flex items-center gap-3">
-    <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    <p class="text-sm text-green-300">Cycle actif : <span class="font-semibold">{{ active_cycle.name }}</span> — {{ active_cycle.get_status_display }}</p>
-    <a href="{% url 'cycles:detail' active_cycle.pk %}" class="ml-auto text-xs text-green-400 hover:text-green-300">Gérer →</a>
+<div class="rounded-xl p-4 mb-4 flex items-center gap-3" style="background:#F0FDF4;border:1px solid #BBF7D0;">
+    <svg class="w-5 h-5 flex-shrink-0" style="color:#059669;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <p class="text-sm" style="color:#166534;">Cycle actif : <span class="font-semibold">{{ active_cycle.name }}</span> — {{ active_cycle.get_status_display }}</p>
+    <a href="{% url 'cycles:detail' active_cycle.pk %}" class="ml-auto text-xs font-medium" style="color:#059669;">Gérer →</a>
 </div>
 {% endif %}
 
 <div class="space-y-3">
     {% for cycle in cycles %}
-    <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition-colors cursor-pointer" onclick="window.location='{% url 'cycles:detail' cycle.pk %}'">
+    <div class="form-card cursor-pointer transition-shadow hover:shadow-md p-5" onclick="window.location='{% url 'cycles:detail' cycle.pk %}'">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 icon-bg-blue">
+                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 </div>
                 <div>
-                    <p class="font-semibold text-slate-100">{{ cycle.name }}</p>
-                    <p class="text-xs text-slate-500">{{ cycle.start_date|date:"d/m/Y" }} — {{ cycle.end_date|date:"d/m/Y" }} · {{ cycle.contribution_amount }}/tête</p>
+                    <p class="font-semibold" style="color:#0F172A;">{{ cycle.name }}</p>
+                    <p class="text-xs font-mono-ui" style="color:#94A3B8;">{{ cycle.start_date|date:"d/m/Y" }} — {{ cycle.end_date|date:"d/m/Y" }} · {{ cycle.contribution_amount }}/tête</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -39,11 +39,11 @@
         </div>
     </div>
     {% empty %}
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-        <div class="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    <div class="form-card p-12 text-center">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3" style="background:#F1F5F9;">
+            <svg class="w-6 h-6" style="color:#CBD5E1;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         </div>
-        <p class="text-slate-500 mb-3">Aucun cycle créé</p>
+        <p class="mb-3" style="color:#94A3B8;">Aucun cycle créé</p>
         <a href="{% url 'cycles:create' %}" class="btn-primary">Créer le premier cycle</a>
     </div>
     {% endfor %}

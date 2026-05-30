@@ -14,4 +14,5 @@ urlpatterns = [
     path('<int:pk>/add-head/', views.member_add_head, name='add_head'),
     path('<int:pk>/delete/', views.member_delete, name='delete'),
     path('profile/', views.my_profile, name='my_profile'),
+    path('analytics/', views.analytics, name='analytics'),
 ]

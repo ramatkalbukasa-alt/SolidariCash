@@ -25,7 +25,7 @@ def rotation_view(request):
     else:
         selected_cycle = active_cycle
 
-    rotation_orders = []
+    rotation_orders = RotationOrder.objects.none()
     if selected_cycle:
         rotation_orders = RotationOrder.objects.filter(
             cycle=selected_cycle

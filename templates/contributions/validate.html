@@ -5,55 +5,55 @@
 {% block content %}
 <div class="max-w-lg">
     <div class="form-card mb-4">
-        <h2 class="font-semibold text-slate-100 mb-4">Détails du paiement</h2>
+        <div class="section-label mb-4">Détails du paiement</div>
         <div class="space-y-2">
             {% for label, val in details %}
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">{{ label }}</span>
-                <span class="text-slate-200">{{ val }}</span>
+                <span style="color:#94A3B8;">{{ label }}</span>
+                <span style="color:#374151;">{{ val }}</span>
             </div>
             {% endfor %}
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Membre</span>
-                <span class="text-slate-200 font-medium">{{ contribution.head.member.full_name }}</span>
+                <span style="color:#94A3B8;">Membre</span>
+                <span class="font-medium" style="color:#374151;">{{ contribution.head.member.full_name }}</span>
             </div>
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Cycle</span>
-                <span class="text-slate-200">{{ contribution.cycle.name }}</span>
+                <span style="color:#94A3B8;">Cycle</span>
+                <span class="font-mono-ui" style="color:#374151;">{{ contribution.cycle.name }}</span>
             </div>
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Montant dû</span>
-                <span class="text-slate-200">{{ contribution.amount_due }}</span>
+                <span style="color:#94A3B8;">Montant dû</span>
+                <span style="color:#374151;">{{ contribution.amount_due }}</span>
             </div>
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Montant soumis</span>
-                <span class="text-green-400 font-bold">{{ contribution.amount_paid }}</span>
+                <span style="color:#94A3B8;">Montant soumis</span>
+                <span class="font-bold" style="color:#059669;">{{ contribution.amount_paid }}</span>
             </div>
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Mode de paiement</span>
-                <span class="text-slate-200">{{ contribution.get_payment_method_display|default:"—" }}</span>
+                <span style="color:#94A3B8;">Mode de paiement</span>
+                <span style="color:#374151;">{{ contribution.get_payment_method_display|default:"—" }}</span>
             </div>
             <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Référence</span>
-                <span class="text-slate-200">{{ contribution.payment_reference|default:"—" }}</span>
+                <span style="color:#94A3B8;">Référence</span>
+                <span class="font-mono-ui" style="color:#374151;">{{ contribution.payment_reference|default:"—" }}</span>
             </div>
             {% if contribution.payment_proof %}
             <div class="flex justify-between text-sm items-center">
-                <span class="text-slate-500">Preuve de paiement</span>
-                <a href="{{ contribution.payment_proof.url }}" target="_blank" class="text-green-400 hover:text-green-300 text-xs">Voir le document →</a>
+                <span style="color:#94A3B8;">Preuve de paiement</span>
+                <a href="{{ contribution.payment_proof.url }}" target="_blank" class="text-xs font-medium" style="color:#0052FF;">Voir le document →</a>
             </div>
             {% endif %}
         </div>
     </div>
     <div class="form-card">
-        <h2 class="font-semibold text-slate-100 mb-5">Votre décision</h2>
+        <div class="section-label mb-5">Votre décision</div>
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {% for field in form %}
             <div>
-                <label class="block text-sm font-medium text-slate-400 mb-2">{{ field.label }}</label>
+                <label class="block text-sm font-medium mb-2" style="color:#374151;">{{ field.label }}</label>
                 {{ field }}
-                {% if field.errors %}<p class="mt-1 text-xs text-red-400">{{ field.errors.0 }}</p>{% endif %}
+                {% if field.errors %}<p class="mt-1 text-xs" style="color:#EF4444;">{{ field.errors.0 }}</p>{% endif %}
             </div>
             {% endfor %}
             <div class="flex gap-3 pt-2">
