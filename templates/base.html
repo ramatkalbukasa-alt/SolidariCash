@@ -277,12 +277,50 @@
         @media (prefers-reduced-motion: reduce) {
             .anim-fade-up,.anim-pulse,.anim-float,.anim-spin-slow { animation: none !important; }
         }
+
+        /* ===== RESPONSIVE SIDEBAR (mobile drawer) ===== */
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                top: 0; bottom: 0; left: 0;
+                z-index: 50;
+                transform: translateX(-100%);
+                transition: transform .25s ease-out, box-shadow .25s ease-out;
+                width: 16rem;
+            }
+            #sidebar.sidebar-open {
+                transform: translateX(0);
+                box-shadow: 4px 0 24px rgba(0,0,0,.12);
+            }
+        }
+        @media (min-width: 1024px) {
+            #sidebar {
+                position: relative;
+                transform: none !important;
+                transition: margin-left .25s ease-out, opacity .25s ease-out;
+            }
+            #sidebar.sidebar-collapsed {
+                margin-left: -16rem;
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+
+        /* ===== RESPONSIVE TABLES ===== */
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        @media (max-width: 767px) {
+            main .form-card, main .stat-card { overflow-x: auto; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .page-title { font-size: 1.25rem; }
+        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen" style="background:#FAFAFA;color:#0F172A;">
 
 {% if user.is_authenticated %}
+<!-- Mobile sidebar overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden" onclick="closeSidebar()"></div>
 <div class="flex h-screen overflow-hidden">
 
     <!-- SIDEBAR -->
@@ -473,20 +511,51 @@
 {% endif %}
 
 <script>
+function openSidebar() {
+    const s = document.getElementById('sidebar');
+    const o = document.getElementById('sidebar-overlay');
+    if (!s) return;
+    if (window.innerWidth < 1024) {
+        s.classList.add('sidebar-open');
+        if (o) o.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    } else {
+        s.classList.remove('sidebar-collapsed');
+    }
+}
+function closeSidebar() {
+    const s = document.getElementById('sidebar');
+    const o = document.getElementById('sidebar-overlay');
+    if (!s) return;
+    if (window.innerWidth < 1024) {
+        s.classList.remove('sidebar-open');
+        if (o) o.classList.add('hidden');
+        document.body.style.overflow = '';
+    } else {
+        s.classList.add('sidebar-collapsed');
+    }
+}
 function toggleSidebar() {
     const s = document.getElementById('sidebar');
     if (!s) return;
-    if (s.style.marginLeft === '-16rem') {
-        s.style.marginLeft = '0';
-        s.style.opacity = '1';
+    if (window.innerWidth < 1024) {
+        s.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
     } else {
-        s.style.marginLeft = '-16rem';
-        s.style.opacity = '0';
+        s.classList.contains('sidebar-collapsed') ? openSidebar() : closeSidebar();
     }
 }
 document.addEventListener('DOMContentLoaded', () => {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.style.transition = 'margin-left .25s ease-out, opacity .25s ease-out';
+    // Auto-close sidebar on mobile at page load
+    if (window.innerWidth < 1024) {
+        const s = document.getElementById('sidebar');
+        if (s) s.classList.remove('sidebar-open');
+    }
+    // Close sidebar on mobile nav link click
+    if (window.innerWidth < 1024) {
+        document.querySelectorAll('#sidebar a').forEach(link => {
+            link.addEventListener('click', closeSidebar);
+        });
+    }
     // Auto-dismiss flash messages
     document.querySelectorAll('[data-autohide]').forEach(el => {
         setTimeout(() => {
@@ -495,6 +564,15 @@ document.addEventListener('DOMContentLoaded', () => {
             el.style.transform = 'translateY(-6px)';
             setTimeout(() => el.remove(), 400);
         }, 4500);
+    });
+    // Wrap tables in responsive container
+    document.querySelectorAll('main table').forEach(t => {
+        if (!t.parentElement.classList.contains('table-responsive')) {
+            const w = document.createElement('div');
+            w.className = 'table-responsive';
+            t.parentNode.insertBefore(w, t);
+            w.appendChild(t);
+        }
     });
 });
 </script>
