@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: solidaricash
+    env: python
+    region: frankfurt
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn solidaricash.wsgi:application --workers 2 --timeout 120"
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: solidaricash-db
+          property: connectionString
+      - key: APP_NAME
+        value: SolidariCash
+      - key: APP_CURRENCY
+        value: XAF
+      - key: APP_CURRENCY_SYMBOL
+        value: "FCFA"
+      - key: ADMIN_COMMISSION_RATE
+        value: "0.02"
+      - key: JWT_ACCESS_TOKEN_LIFETIME_MINUTES
+        value: "60"
+      - key: JWT_REFRESH_TOKEN_LIFETIME_DAYS
+        value: "7"
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+databases:
+  - name: solidaricash-db
+    plan: free
+    region: frankfurt
