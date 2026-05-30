@@ -205,4 +205,10 @@ LOGGING = {
     },
 }
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+if DEBUG:
+    MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+else:
+    MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = False
