@@ -79,14 +79,21 @@ if _DATABASE_URL:
     _db['CONN_HEALTH_CHECKS'] = True
     DATABASES = {'default': _db}
 else:
+    _db_engine = config('DB_ENGINE', default='django.db.backends.sqlite3')
+    _db_opts = {}
+    if 'postgresql' in _db_engine and not DEBUG:
+        _db_opts = {'sslmode': 'require'}
     DATABASES = {
         'default': {
-            'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+            'ENGINE': _db_engine,
             'NAME': config('DB_NAME', default=str(BASE_DIR / 'solidaricash.db')),
             'USER': config('DB_USER', default=''),
             'PASSWORD': config('DB_PASSWORD', default=''),
             'HOST': config('DB_HOST', default=''),
             'PORT': config('DB_PORT', default=''),
+            'OPTIONS': _db_opts,
+            'CONN_MAX_AGE': 600,
+            'CONN_HEALTH_CHECKS': True,
         }
     }
 
@@ -186,8 +193,9 @@ APP_CURRENCY = config('APP_CURRENCY', default='USD')
 APP_CURRENCY_SYMBOL = config('APP_CURRENCY_SYMBOL', default='$')
 ADMIN_COMMISSION_RATE = config('ADMIN_COMMISSION_RATE', default=0.02, cast=float)
 
-CELERY_BROKER_URL = config('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6379/0')
+_REDIS_URL = config('REDIS_URL', default='')
+CELERY_BROKER_URL = _REDIS_URL if _REDIS_URL else 'memory://'
+CELERY_RESULT_BACKEND = _REDIS_URL if _REDIS_URL else 'cache+memory://'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
